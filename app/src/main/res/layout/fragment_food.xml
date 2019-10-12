@@ -205,7 +205,7 @@
         app:srcCompat="@drawable/ic_sort_black_24dp" />
 
     <TextView
-        android:id="@+id/emptyLB"
+        android:id="@+id/backgroundLB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0.15"

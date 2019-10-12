@@ -14,8 +14,12 @@
     <string name="empty_list">Empty</string>
 
     <string name="error_whatsapp">There was an error opening WhatsApp</string>
+    <string name="error_copy">There was an error while copying</string>
     <string name="successfully_copied">Copied to clipboard</string>
     <string name="no_content">There is no content</string>
-    <string name="generating">Generating…</string>
-    <string name="generation_done">Done</string>
+    <string name="generating">Loading…</string>
+    <string name="generation_error">There was an error while getting food</string>
+
+    <string name="buy_header">Comprar:</string>
+    <string name="prepare_header">Preparar:</string>
 </resources>
