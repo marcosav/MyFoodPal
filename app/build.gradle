@@ -2,13 +2,16 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.gmail.marcosav2010.mav"
+        applicationId "com.gmail.marcosav2010.myfitnesspal"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
@@ -45,4 +48,6 @@ dependencies {
     api 'com.google.guava:guava:28.1-android'
     api 'org.jsoup:jsoup:1.12.1'
     implementation files('../../../Eclipse/myfitnesspal/myfitnesspal-api/build/libs/myfitnesspal-api.jar')
+
+    implementation 'com.github.Cutta:TagView:1.3'
 }

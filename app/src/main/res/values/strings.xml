@@ -19,6 +19,7 @@
     <string name="no_content">There is no content</string>
     <string name="generating">Loading…</string>
     <string name="generation_error">There was an error while getting food</string>
+    <string name="generation_error_login"> please check your user/password</string>
 
     <string name="buy_header">Comprar:</string>
     <string name="prepare_header">Preparar:</string>
