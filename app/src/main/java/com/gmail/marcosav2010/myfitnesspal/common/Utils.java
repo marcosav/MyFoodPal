@@ -1,9 +1,13 @@
 package com.gmail.marcosav2010.myfitnesspal.common;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import com.gmail.marcosav2010.myfitnesspal.R;
@@ -44,5 +48,33 @@ public class Utils {
                 .setContentText(body)
                 .setSmallIcon(R.drawable.ic_reload)
                 .setAutoCancel(true);
+    }
+
+    public static Integer copyToClipboard(Activity activity, String content) {
+        try {
+            ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copied List", content);
+            clipboard.setPrimaryClip(clip);
+
+            return R.string.successfully_copied;
+        } catch (Exception ex) {
+            return R.string.error_copy;
+        }
+    }
+
+    public static Integer shareWhatsApp(Activity activity, String content) {
+        Intent wIntent = new Intent(Intent.ACTION_SEND);
+
+        wIntent.setType("text/plain");
+        wIntent.setPackage("com.whatsapp");
+        wIntent.putExtra(Intent.EXTRA_TEXT, content);
+
+        try {
+            activity.startActivity(wIntent);
+        } catch (Exception ex) {
+            return R.string.error_whatsapp;
+        }
+
+        return null;
     }
 }

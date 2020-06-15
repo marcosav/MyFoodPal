@@ -53,6 +53,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/usernameTIL"
                     android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_height="wrap_content"
                     android:hint="@string/mfp_username_input_hint">
 
@@ -62,7 +63,6 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="username"
                         android:ems="10"
-                        android:gravity="center"
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,6 +70,7 @@
                     android:id="@+id/passwordTIL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="10dp"
                     android:hint="@string/mfp_password_input_hint">
 
@@ -79,7 +80,6 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="password"
                         android:ems="10"
-                        android:gravity="center"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -92,12 +92,13 @@
 
             </LinearLayout>
 
+            <!--android:textColor="@color/disabled"-->
             <TextView
                 android:id="@+id/loginDateLB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|center_horizontal|center_vertical"
-                android:textColor="@color/disabled"
+
                 android:textSize="12sp" />
         </LinearLayout>
     </ScrollView>

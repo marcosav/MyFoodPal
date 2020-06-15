@@ -34,12 +34,14 @@
     <string name="value_input_hint">Value</string>
 
     <string name="sm_save">Save</string>
+    <string name="sm_export">Export</string>
     <string name="sm_reload">Reload</string>
 
     <string name="mfp_username_input_hint">Username</string>
     <string name="mfp_password_input_hint">Password</string>
 
     <string name="settings_saved">Settings saved</string>
+    <string name="settings_bad_format">Erroneous JSON format</string>
     <string name="settings_credentials_saved">Credentials successfully checked and saved</string>
     <string name="settings_saving">Saving settings&#8230;</string>
     <string name="settings_saving_and_checking_credentials">Saving config and checking credentials&#8230;</string>

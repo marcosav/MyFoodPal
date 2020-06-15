@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.cunoraz.tagview.Tag;
+import com.gmail.marcosav2010.json.JSONException;
 import com.gmail.marcosav2010.json.JSONObject;
 import com.gmail.marcosav2010.myfitnesspal.R;
 import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
@@ -34,6 +37,7 @@ import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.ETag;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.TagFactory;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.TagGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Collection;
@@ -122,6 +126,9 @@ public class SettingsFragment extends Fragment {
 
             case R.id.sm_save:
                 savePreferences();
+
+            case R.id.sm_export:
+                exportPreferences();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -227,8 +234,8 @@ public class SettingsFragment extends Fragment {
         title.setGravity(Gravity.CENTER);
         title.setTextSize(20);
         title.setTypeface(Typeface.DEFAULT_BOLD);
-        title.setTextColor(ContextCompat.getColor(context, R.color.white));
-        title.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightPrimary));
+        title.setTextColor(ContextCompat.getColor(context, R.color.primaryTextColor));
+        title.setBackgroundColor(ContextCompat.getColor(context, R.color.primaryDarkColor));
         title.setPadding(0, 15, 0, 15);
         title.setElevation(8);
 
@@ -287,7 +294,38 @@ public class SettingsFragment extends Fragment {
         });
 
         preferenceManager.saveMFPConfig(json.toString());
-        preferenceManager.reloadListerData();
+    }
+
+    private void exportPreferences() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+        builder.setTitle("Raw Config");
+
+        EditText input = new EditText(requireContext());
+        input.setText(preferenceManager.getMFPConfig());
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            String newConf = input.getText().toString();
+
+            try {
+                JSONObject parsed = new JSONObject(newConf);
+                preferenceManager.saveMFPConfig(parsed.toString());
+                load();
+
+            } catch (JSONException ex) {
+                Toast.makeText(context, R.string.settings_bad_format, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            dialog.dismiss();
+            Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_LONG).show();
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
     private final class LoadAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -295,8 +333,8 @@ public class SettingsFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Thread.sleep(500l);
-            } catch (Exception ex) {
+                Thread.sleep(500L);
+            } catch (Exception ignored) {
             }
 
             return null;

@@ -26,20 +26,21 @@ public class PreferenceManager {
         return ld;
     }
 
-    public void reloadListerData() {
+    private void reloadListerData() {
         ld = new ListerData(getMFPConfig());
         ld.load();
     }
 
     public void saveMFPConfig(String config) {
         preferences.edit().putString(MFP_CONFIG, config).apply();
+        reloadListerData();
     }
 
     public void saveCredentials(String username, String password) {
         preferences.edit().putString(MFP_USERNAME, username).putString(MFP_PASSWORD, password).apply();
     }
 
-    private String getMFPConfig() {
+    public String getMFPConfig() {
         return preferences.getString(MFP_CONFIG, BASE_CONFIG);
     }
 

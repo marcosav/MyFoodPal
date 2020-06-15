@@ -1,10 +1,7 @@
 package com.gmail.marcosav2010.myfitnesspal.ui.food;
 
 import android.app.DatePickerDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +22,7 @@ import com.gmail.marcosav2010.myfitnesspal.R;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormater;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
+import com.gmail.marcosav2010.myfitnesspal.common.Utils;
 import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
 import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryData;
@@ -50,8 +48,6 @@ public class FoodFragment extends Fragment {
     private EditText foodTextContainer, dateOpt, mealsOpt;
     private TextView backgroundLB;
 
-    private View root;
-
     private final DataStorer dataStorer;
     private ProgressBar loadFoodPB;
     private DayFoodQueryData queryData;
@@ -60,7 +56,7 @@ public class FoodFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         queryData = new DayFoodQueryData();
 
-        root = inflater.inflate(R.layout.fragment_food, container, false);
+        View root = inflater.inflate(R.layout.fragment_food, container, false);
 
         context = root.getContext();
 
@@ -249,40 +245,10 @@ public class FoodFragment extends Fragment {
         if (content.trim().isEmpty())
             return R.string.no_content;
 
-        if (v.getId() == copyBT.getId()) {
-            return copyToClipboard(content);
-
-        } else if (v.getId() == wpBT.getId()) {
-            return shareWhatsApp(content);
-        }
-
-        return null;
-    }
-
-    private Integer copyToClipboard(String content) {
-        try {
-            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Copied List", content);
-            clipboard.setPrimaryClip(clip);
-
-            return R.string.successfully_copied;
-        } catch (Exception ex) {
-            return R.string.error_copy;
-        }
-    }
-
-    private Integer shareWhatsApp(String content) {
-        Intent wIntent = new Intent(Intent.ACTION_SEND);
-
-        wIntent.setType("text/plain");
-        wIntent.setPackage("com.whatsapp");
-        wIntent.putExtra(Intent.EXTRA_TEXT, content);
-
-        try {
-            getActivity().startActivity(wIntent);
-        } catch (Exception ex) {
-            return R.string.error_whatsapp;
-        }
+        if (v.getId() == copyBT.getId())
+            return Utils.copyToClipboard(getActivity(), content);
+        else if (v.getId() == wpBT.getId())
+            return Utils.shareWhatsApp(getActivity(), content);
 
         return null;
     }

@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/sm_export"
+        android:icon="@drawable/ic_baseline_edit"
+        android:title="@string/sm_export"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/sm_reload"
         android:icon="@drawable/ic_reload"
         android:title="@string/sm_reload"
