@@ -3,7 +3,16 @@
     <color name="colorPrimary">#6DAFE0</color>
     <color name="colorPrimaryDark">#5293C4</color>
     <color name="colorAccent">#6DAFE0</color>
+    <color name="colorLightPrimary">#87cbff</color>
+    <color name="colorBackground">#C8E9FE</color>
     <color name="colorError">#C62828</color>
     <color name="disabled">#6D6D6D</color>
-    <color name="colorButton">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="colorSuccess">#00E00A</color>
+
+    <color name="tag_color">#96d5ff</color>
+    <color name="tag_click_color">#7ac3f4</color>
+    <color name="add_tag_color">#ff7590</color>
+    <color name="add_tag_click_color">#ef4f6f</color>
 </resources>

@@ -1,23 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tagview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/settingsProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        tagview:layout_constraintBottom_toBottomOf="parent"
+        tagview:layout_constraintEnd_toEndOf="@+id/scrollSettingsContainer"
+        tagview:layout_constraintStart_toStartOf="parent"
+        tagview:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
+        android:id="@+id/scrollSettingsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tagview:layout_constraintBottom_toBottomOf="parent"
         tagview:layout_constraintEnd_toEndOf="parent"
+        tagview:layout_constraintHorizontal_bias="0.0"
         tagview:layout_constraintStart_toStartOf="parent"
-        tagview:layout_constraintTop_toTopOf="parent">
+        tagview:layout_constraintTop_toTopOf="parent"
+        tagview:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:id="@+id/scrollLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp"></LinearLayout>
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/loginPB"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:id="@+id/mfpCredentialsLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="25dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/usernameTIL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mfp_username_input_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/usernameET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="username"
+                        android:ems="10"
+                        android:gravity="center"
+                        android:inputType="textPersonName" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordTIL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/mfp_password_input_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:ems="10"
+                        android:gravity="center"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tagGroupsLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/loginDateLB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|center_horizontal|center_vertical"
+                android:textColor="@color/disabled"
+                android:textSize="12sp" />
+        </LinearLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

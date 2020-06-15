@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.gmail.marcosav2010.myfitnesspal.R;
+import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
+import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormater;
+import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
+import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
+import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryData;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryTask;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryResult;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPDayQuery;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPDayQueryData;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -31,27 +39,32 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class FoodFragment extends Fragment {
 
     private static final int DINNER_THRESHOLD = 16;
 
-    private RadioButton buyRB, prepareRB;
     private Button copyBT, wpBT;
-    private FloatingActionButton genBT;
     private EditText foodTextContainer, dateOpt, mealsOpt;
     private TextView backgroundLB;
 
     private View root;
 
-    private MFPDayQueryData queryData;
+    private final DataStorer dataStorer;
+    private ProgressBar loadFoodPB;
+    private DayFoodQueryData queryData;
+    private Context context;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        queryData = new MFPDayQueryData();
+        queryData = new DayFoodQueryData();
 
         root = inflater.inflate(R.layout.fragment_food, container, false);
 
-        buyRB = root.findViewById(R.id.buyRB);
-        prepareRB = root.findViewById(R.id.prepareRB);
+        context = root.getContext();
+
+        RadioButton buyRB = root.findViewById(R.id.buyRB), prepareRB = root.findViewById(R.id.prepareRB);
         buyRB.setOnClickListener(this::onBuySelect);
         prepareRB.setOnClickListener(this::onPrepareSelect);
 
@@ -59,7 +72,7 @@ public class FoodFragment extends Fragment {
 
         copyBT = root.findViewById(R.id.copyBT);
         wpBT = root.findViewById(R.id.wpBT);
-        genBT = root.findViewById(R.id.genBT);
+        FloatingActionButton genBT = root.findViewById(R.id.genBT);
 
         copyBT.setOnClickListener(this::onShareClick);
         wpBT.setOnClickListener(this::onShareClick);
@@ -68,6 +81,8 @@ public class FoodFragment extends Fragment {
 
         dateOpt = root.findViewById(R.id.genDateOptField);
         mealsOpt = root.findViewById(R.id.genMealsOptField);
+
+        loadFoodPB = root.findViewById(R.id.loadFoodPB);
 
         mealsOpt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -125,7 +140,7 @@ public class FoodFragment extends Fragment {
 
     private void pickDate() {
         Calendar c = Calendar.getInstance();
-        new DatePickerDialog(root.getContext(), (view, year, month, dayOfMonth) -> {
+        new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
             Calendar cal = Calendar.getInstance();
             cal.set(year, month, dayOfMonth);
             setDate(cal);
@@ -148,6 +163,7 @@ public class FoodFragment extends Fragment {
     private void showLoading() {
         backgroundLB.setVisibility(View.VISIBLE);
         backgroundLB.setText(R.string.generating);
+        loadFoodPB.setVisibility(View.VISIBLE);
     }
 
     private void onGenClick(View v) {
@@ -155,7 +171,32 @@ public class FoodFragment extends Fragment {
         clearContent();
         showLoading();
 
-        new MFPDayQuery(queryData, this::handleResult).execute("", "");
+        PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
+        ListerData lc = preferenceManager.getListerData();
+        MFPSession session = dataStorer.getSession();
+
+        if (session == null) {
+            String username = preferenceManager.getMFPUsername();
+            String password = preferenceManager.getMFPPassword();
+            if (username == null || password == null) {
+                onResultError(FoodQueryResult.Type.NO_SESSION);
+            } else {
+                new SessionRequestTask(context, r -> {
+                    if (r.getType() == MFPSessionRequestResult.Type.SUCCESS)
+                        sendFoodQuery(dataStorer.getSession(), lc);
+                    else
+                        onResultError(FoodQueryResult.Type.NO_SESSION);
+                }).execute(username, password);
+            }
+
+            return;
+        }
+
+        sendFoodQuery(session, lc);
+    }
+
+    private void sendFoodQuery(MFPSession session, ListerData lc) {
+        new DayFoodQueryTask(context, session, lc, new CustomFoodFormater(lc), queryData, this::handleResult).execute();
     }
 
     private void setContentEditable(boolean b) {
@@ -174,6 +215,7 @@ public class FoodFragment extends Fragment {
     }
 
     private void handleResult(FoodQueryResult result) {
+        loadFoodPB.setVisibility(View.INVISIBLE);
         if (result.getType() == FoodQueryResult.Type.SUCCESS)
             onResultGot(result.getResult());
         else
@@ -183,7 +225,7 @@ public class FoodFragment extends Fragment {
     private void onResultError(FoodQueryResult.Type type) {
         showEmpty();
 
-        String msg = getString(R.string.generation_error) + (type == FoodQueryResult.Type.LOGIN_ERROR ? getString(R.string.generation_error_login) : "");
+        String msg = getString(R.string.food_generation_error_base) + getString(type.getMsg());
 
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }

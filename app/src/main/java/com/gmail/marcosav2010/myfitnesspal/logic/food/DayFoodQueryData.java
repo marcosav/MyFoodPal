@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class MFPDayQueryData {
+public class DayFoodQueryData {
 
     private String meals;
     private boolean buy;

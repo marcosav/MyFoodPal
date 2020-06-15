@@ -18,9 +18,32 @@
     <string name="successfully_copied">Copied to clipboard</string>
     <string name="no_content">There is no content</string>
     <string name="generating">Loading…</string>
-    <string name="generation_error">There was an error while getting food</string>
-    <string name="generation_error_login"> please check your user/password</string>
+
+    <string name="food_generation_error_base">There was an error while getting food:&#160;</string>
+    <string name="food_result_unknown_error">Unexpected error</string>
+    <string name="result_io_error">Connection error</string>
+    <string name="food_result_no_session_error">There\'s no myfitnesspal session created</string>
+    <string name="result_no_internet_error">There\'s no internet connection</string>
+
+    <string name="session_request_error_login">please check your user/password</string>
 
     <string name="buy_header">Comprar:</string>
     <string name="prepare_header">Preparar:</string>
+
+    <string name="name_input_hint">Name</string>
+    <string name="value_input_hint">Value</string>
+
+    <string name="sm_save">Save</string>
+    <string name="sm_reload">Reload</string>
+
+    <string name="mfp_username_input_hint">Username</string>
+    <string name="mfp_password_input_hint">Password</string>
+
+    <string name="settings_saved">Settings saved</string>
+    <string name="settings_credentials_saved">Credentials successfully checked and saved</string>
+    <string name="settings_saving">Saving settings&#8230;</string>
+    <string name="settings_saving_and_checking_credentials">Saving config and checking credentials&#8230;</string>
+    <string name="settings_error_logging">There was en error while logging in:&#160;</string>
+
+    <string name="s_credentials_title">myfitnesspal Credentials</string>
 </resources>
