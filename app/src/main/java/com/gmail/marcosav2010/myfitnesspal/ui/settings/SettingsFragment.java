@@ -126,6 +126,7 @@ public class SettingsFragment extends Fragment {
 
             case R.id.sm_save:
                 savePreferences();
+                break;
 
             case R.id.sm_export:
                 exportPreferences();
