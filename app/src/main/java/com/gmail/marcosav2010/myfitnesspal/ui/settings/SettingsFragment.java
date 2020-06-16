@@ -3,15 +3,14 @@ package com.gmail.marcosav2010.myfitnesspal.ui.settings;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +36,10 @@ import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.ETag;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.TagFactory;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.TagGroup;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,9 +51,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SettingsFragment extends Fragment {
+import lombok.RequiredArgsConstructor;
 
-    private View root;
+public class SettingsFragment extends Fragment {
 
     private LinearLayout settingsLinearLayout, tagGroupsLinearLayout;
     private ProgressBar progressBar;
@@ -61,24 +62,18 @@ public class SettingsFragment extends Fragment {
     private PreferenceManager preferenceManager;
 
     private TextInputEditText usernameET, passwordET;
-    private TextView credentialsHeader, loginDateLB;
+    private TextInputLayout usernameTIL, passwordTIL;
+    private TextView loginDateLB;
 
-    private Map<String, TagGroup> tagGroups;
+    private Map<String, TagGroup> tagGroups = new HashMap<>();
 
     private TagFactory tf;
 
-    private Set<String> viewStack;
+    private Set<String> viewStack = Collections.synchronizedSet(new HashSet<>());
 
     private ProgressBar loginPB;
 
     private Context context;
-
-    public SettingsFragment(DataStorer dataStorer) {
-        viewStack = Collections.synchronizedSet(new HashSet<>());
-        tagGroups = new HashMap<>();
-        this.dataStorer = dataStorer;
-        preferenceManager = dataStorer.getPreferenceManager();
-    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,11 +81,18 @@ public class SettingsFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_settings, container, false);
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         context = root.getContext();
 
+        dataStorer = DataStorer.load(context);
+        preferenceManager = dataStorer.getPreferenceManager();
+
         tf = new TagFactory(context);
+
+        MaterialToolbar toolbar = root.findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(this::onTopBarMenuOption);
+        toolbar.setNavigationOnClickListener(e -> getParentFragmentManager().popBackStack());
 
         settingsLinearLayout = root.findViewById(R.id.scrollLL);
         tagGroupsLinearLayout = root.findViewById(R.id.tagGroupsLL);
@@ -102,23 +104,19 @@ public class SettingsFragment extends Fragment {
         usernameET = root.findViewById(R.id.usernameET);
         passwordET = root.findViewById(R.id.passwordET);
 
+        usernameTIL = root.findViewById(R.id.usernameTIL);
+        passwordTIL = root.findViewById(R.id.passwordTIL);
+
         loginPB = root.findViewById(R.id.loginPB);
 
-        settingsLinearLayout.addView(credentialsHeader = createSectionTitle(getString(R.string.s_credentials_title)), 0);
+        settingsLinearLayout.addView(createDivider(), 0);
+        settingsLinearLayout.addView(createSectionTitle(getString(R.string.s_credentials_title)), 1);
 
         load();
         return root;
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.settings_menu, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean onTopBarMenuOption(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sm_reload:
                 load();
@@ -142,7 +140,7 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         settingsLinearLayout.setVisibility(View.GONE);
-                        new LoadAsyncTask().execute();
+                        new LoadAsyncTask(SettingsFragment.this).execute();
                     }
                 });
 
@@ -203,9 +201,12 @@ public class SettingsFragment extends Fragment {
     private void createMFPConfigSection(String name, String k, TagGroup tags) {
         LinearLayout ll = new LinearLayout(context);
         ll.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(20, 20, 20, 20);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(20, 40, 20, 40);
         ll.setLayoutParams(lp);
+
+        tagGroupsLinearLayout.addView(createDivider());
 
         tagGroupsLinearLayout.addView(createSectionTitle(name));
         ll.addView(tags);
@@ -229,16 +230,30 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    private View createDivider() {
+        View dividerView = new View(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.FILL_PARENT, (int) (getResources().getDisplayMetrics().density * 1));
+        dividerView.setLayoutParams(lp);
+
+        TypedArray array = requireContext().getTheme()
+                .obtainStyledAttributes(new int[]{android.R.attr.listDivider});
+        Drawable draw = array.getDrawable(0);
+        array.recycle();
+
+        dividerView.setBackgroundDrawable(draw);
+
+        return dividerView;
+    }
+
     private TextView createSectionTitle(String name) {
         TextView title = new TextView(context);
-        title.setText(name);
-        title.setGravity(Gravity.CENTER);
-        title.setTextSize(20);
+
+        title.setText(name.toUpperCase());
+        title.setTextSize(14);
         title.setTypeface(Typeface.DEFAULT_BOLD);
-        title.setTextColor(ContextCompat.getColor(context, R.color.primaryTextColor));
-        title.setBackgroundColor(ContextCompat.getColor(context, R.color.primaryDarkColor));
-        title.setPadding(0, 15, 0, 15);
-        title.setElevation(8);
+        title.setTextColor(ContextCompat.getColor(context, R.color.primaryColor));
+        title.setPadding(40, 50, 0, 40);
 
         return title;
     }
@@ -256,16 +271,23 @@ public class SettingsFragment extends Fragment {
             usernameET.clearFocus();
             passwordET.clearFocus();
 
-            credentialsHeader.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSuccess));
-
             Toast.makeText(context, R.string.settings_credentials_saved, Toast.LENGTH_LONG).show();
+            setCredentialsError(null);
 
         } else {
             String msg = getString(R.string.settings_error_logging) + getString(type.getMsg());
-
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+            setCredentialsError(getString(type.getMsg()));
+        }
+    }
 
-            credentialsHeader.setBackgroundColor(ContextCompat.getColor(context, R.color.colorError));
+    private void setCredentialsError(CharSequence msg) {
+        if (msg == null) {
+            usernameTIL.setErrorEnabled(false);
+            passwordTIL.setErrorEnabled(false);
+        } else {
+            usernameTIL.setError(" ");
+            passwordTIL.setError(msg);
         }
     }
 
@@ -329,7 +351,10 @@ public class SettingsFragment extends Fragment {
         builder.show();
     }
 
-    private final class LoadAsyncTask extends AsyncTask<Void, Void, Void> {
+    @RequiredArgsConstructor
+    private static final class LoadAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private final SettingsFragment settingsFragment;
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -343,7 +368,7 @@ public class SettingsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            addContent();
+            settingsFragment.addContent();
         }
     }
 }

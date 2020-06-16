@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/bfbm_wp"
+        android:icon="@drawable/ic_whatsapp_logo"
+        android:title="@string/bnm_share_wp"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/bfbm_copy"
+        android:icon="@drawable/ic_content_copy"
+        android:title="@string/bnm_share_copy"
+        app:showAsAction="ifRoom" />
+
+</menu>

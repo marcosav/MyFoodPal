@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -30,6 +30,7 @@ import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryTask;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryResult;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -37,23 +38,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class FoodFragment extends Fragment {
 
     private static final int DINNER_THRESHOLD = 16;
 
-    private Button copyBT, wpBT;
+    private FoodFragmentListener listener;
+
+    private FloatingActionButton genBT;
+
     private EditText foodTextContainer, dateOpt, mealsOpt;
     private TextView backgroundLB;
 
-    private final DataStorer dataStorer;
+    private DataStorer dataStorer;
     private ProgressBar loadFoodPB;
     private DayFoodQueryData queryData;
+
     private Context context;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        dataStorer = DataStorer.load(getContext());
         queryData = new DayFoodQueryData();
 
         View root = inflater.inflate(R.layout.fragment_food, container, false);
@@ -66,12 +69,11 @@ public class FoodFragment extends Fragment {
 
         backgroundLB = root.findViewById(R.id.backgroundLB);
 
-        copyBT = root.findViewById(R.id.copyBT);
-        wpBT = root.findViewById(R.id.wpBT);
-        FloatingActionButton genBT = root.findViewById(R.id.genBT);
+        BottomAppBar bottomBar = root.findViewById(R.id.bottomFoodBar);
+        genBT = root.findViewById(R.id.genBT);
 
-        copyBT.setOnClickListener(this::onShareClick);
-        wpBT.setOnClickListener(this::onShareClick);
+        bottomBar.setOnMenuItemClickListener(this::onNavigationItemSelected);
+        bottomBar.setNavigationOnClickListener(e -> listener.onSettingsOpen());
 
         genBT.setOnClickListener(this::onGenClick);
 
@@ -102,6 +104,16 @@ public class FoodFragment extends Fragment {
         buyRB.callOnClick();
 
         return root;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            listener = (FoodFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArticleSelectedListener");
+        }
     }
 
     private void onBuySelect(View v) {
@@ -151,20 +163,37 @@ public class FoodFragment extends Fragment {
         foodTextContainer.setText("");
     }
 
+    private void setContentEditable(boolean b) {
+        foodTextContainer.setClickable(b);
+        foodTextContainer.setCursorVisible(b);
+        foodTextContainer.setFocusable(b);
+        foodTextContainer.setFocusableInTouchMode(b);
+    }
+
     private void showEmpty() {
         backgroundLB.setVisibility(View.VISIBLE);
         backgroundLB.setText(R.string.empty_list);
+        loadFoodPB.setVisibility(View.INVISIBLE);
+        genBT.setEnabled(true);
     }
 
     private void showLoading() {
+        setContentEditable(false);
         backgroundLB.setVisibility(View.VISIBLE);
         backgroundLB.setText(R.string.generating);
         loadFoodPB.setVisibility(View.VISIBLE);
+        genBT.setEnabled(false);
+        clearContent();
+    }
+
+    private void showLoaded() {
+        setContentEditable(true);
+        backgroundLB.setVisibility(View.INVISIBLE);
+        loadFoodPB.setVisibility(View.INVISIBLE);
+        genBT.setEnabled(true);
     }
 
     private void onGenClick(View v) {
-        setContentEditable(false);
-        clearContent();
         showLoading();
 
         PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
@@ -174,6 +203,7 @@ public class FoodFragment extends Fragment {
         if (session == null) {
             String username = preferenceManager.getMFPUsername();
             String password = preferenceManager.getMFPPassword();
+
             if (username == null || password == null) {
                 onResultError(FoodQueryResult.Type.NO_SESSION);
             } else {
@@ -195,23 +225,28 @@ public class FoodFragment extends Fragment {
         new DayFoodQueryTask(context, session, lc, new CustomFoodFormater(lc), queryData, this::handleResult).execute();
     }
 
-    private void setContentEditable(boolean b) {
-        foodTextContainer.setClickable(b);
-        foodTextContainer.setCursorVisible(b);
-        foodTextContainer.setFocusable(b);
-        foodTextContainer.setFocusableInTouchMode(b);
-    }
+    private boolean onNavigationItemSelected(MenuItem item) {
+        Integer msg = null;
+        String content = getFoodContent();
 
-    private void onShareClick(View v) {
-        Integer msg = tryShare(v);
-        if (msg == null)
-            return;
+        if (content.trim().isEmpty())
+            msg = R.string.no_content;
+        else
+            switch (item.getItemId()) {
+                case R.id.bfbm_copy:
+                    msg = Utils.copyToClipboard(getActivity(), content);
+                    break;
+                case R.id.bfbm_wp:
+                    msg = Utils.shareWhatsApp(getActivity(), content);
+            }
 
-        Toast.makeText(getContext(), getString(msg), Toast.LENGTH_SHORT).show();
+        if (msg != null)
+            Toast.makeText(getContext(), getString(msg), Toast.LENGTH_SHORT).show();
+
+        return true;
     }
 
     private void handleResult(FoodQueryResult result) {
-        loadFoodPB.setVisibility(View.INVISIBLE);
         if (result.getType() == FoodQueryResult.Type.SUCCESS)
             onResultGot(result.getResult());
         else
@@ -220,9 +255,7 @@ public class FoodFragment extends Fragment {
 
     private void onResultError(FoodQueryResult.Type type) {
         showEmpty();
-
         String msg = getString(R.string.food_generation_error_base) + getString(type.getMsg());
-
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
 
@@ -232,24 +265,9 @@ public class FoodFragment extends Fragment {
             return;
         }
 
-        backgroundLB.setVisibility(View.INVISIBLE);
+        showLoaded();
 
         foodTextContainer.append(getString(queryData.isBuy() ? R.string.buy_header : R.string.prepare_header));
         got.forEach(f -> foodTextContainer.append("\n - " + f));
-
-        setContentEditable(true);
-    }
-
-    private Integer tryShare(View v) {
-        String content = getFoodContent();
-        if (content.trim().isEmpty())
-            return R.string.no_content;
-
-        if (v.getId() == copyBT.getId())
-            return Utils.copyToClipboard(getActivity(), content);
-        else if (v.getId() == wpBT.getId())
-            return Utils.shareWhatsApp(getActivity(), content);
-
-        return null;
     }
 }

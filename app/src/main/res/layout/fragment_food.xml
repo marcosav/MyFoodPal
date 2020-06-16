@@ -1,234 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/foodTextContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:autofillHints='@null'
-        android:background="@null"
-        android:clickable="false"
-        android:cursorVisible="false"
-        android:ems="10"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:gravity="top"
-        android:hint='@null'
-        android:inputType="textMultiLine|text"
-        android:textSize="21sp"
-        app:layout_constraintBottom_toTopOf="@+id/shareToolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/listOptionsToolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/gen_options_toolbar_height"
-        android:elevation="6dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp">
 
-    <ProgressBar
-        android:id="@+id/loadFoodPB"
-        style="@android:style/Widget.Material.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/foodTextContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listOptionsToolbar" />
+        <EditText
+            android:id="@+id/foodTextContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="4dp"
+            android:autofillHints='@null'
+            android:background="@null"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="top"
+            android:hint='@null'
+            android:inputType="textMultiLine|text"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
 
-    <LinearLayout
-        android:id="@+id/genOptLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/gen_options_toolbar_height"
-        android:elevation="6dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <RadioGroup
-            android:id="@+id/genOptRBG"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/listOptionsToolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/gen_options_toolbar_height"
+            android:elevation="6dp"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <!--android:textColor="@color/disabled"
-            android:textColorHighlight="@android:color/secondary_text_light_nodisable"-->
-            <RadioButton
-                android:id="@+id/buyRB"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:checked="true"
-                android:paddingHorizontal="10dp"
-                android:text="@string/food_rb_buy"
-                android:textAlignment="viewStart"
-                android:textSize="20sp" />
-
-            <!--android:textColor="@color/disabled"
-            android:textColorHighlight="@android:color/secondary_text_light_nodisable"-->
-            <RadioButton
-                android:id="@+id/prepareRB"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingHorizontal="10dp"
-                android:text="@string/food_rb_prepare"
-                android:textAlignment="viewStart"
-                android:textSize="20sp" />
-
-        </RadioGroup>
+        <ProgressBar
+            android:id="@+id/loadFoodPB"
+            style="@android:style/Widget.Material.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/foodTextContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listOptionsToolbar" />
 
         <LinearLayout
+            android:id="@+id/genOptLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/gen_options_toolbar_height"
+            android:elevation="6dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <!--android:textColor="@color/disabled"-->
-            <TextView
-                android:id="@+id/genDateOptLabel"
+            <RadioGroup
+                android:id="@+id/genOptRBG"
                 android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/buyRB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:drawableStart="@drawable/ic_shop"
+                    android:paddingHorizontal="10dp" />
+
+                <Space
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:id="@+id/prepareRB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:drawableStart="@drawable/ic_restaurant"
+                    android:paddingHorizontal="10dp" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
                 android:gravity="center"
-                android:paddingHorizontal="10dp"
-                android:text="@string/gen_date_opt"
-                android:textAlignment="gravity"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/genDateOptField"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:autofillHints="@null"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:ems="10"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="@null"
-                android:inputType="date"
-                android:paddingHorizontal="10dp"
-                android:textAlignment="center" />
+                <EditText
+                    android:id="@+id/genDateOptField"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:autofillHints="@null"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:drawableStart="@drawable/ic_date"
+                    android:ems="10"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@null"
+                    android:inputType="date"
+                    android:textAlignment="center" />
 
-            <!--android:textColor="@color/disabled"-->
-            <TextView
-                android:id="@+id/genMealsOptLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingHorizontal="10dp"
-                android:text="@string/gen_meals_opt"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/genMealsOptField"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:autofillHints="@null"
-                android:ems="10"
-                android:hint="@null"
-                android:inputType="number"
-                android:maxLength="4"
-                android:textAlignment="center" />
+                <EditText
+                    android:id="@+id/genMealsOptField"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autofillHints="@null"
+                    android:drawableStart="@drawable/ic_numbered"
+                    android:ems="10"
+                    android:hint="@null"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textAlignment="center" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <!--android:background="#FFFFFF"
-    android:theme="?attr/actionBarTheme"-->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/shareToolbar"
+        <TextView
+            android:id="@+id/backgroundLB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.25"
+            android:text="@string/empty_list"
+            android:textAlignment="viewEnd"
+            android:textAllCaps="false"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/foodTextContainer"
+            app:layout_constraintEnd_toEndOf="@+id/foodTextContainer"
+            app:layout_constraintStart_toStartOf="@+id/foodTextContainer"
+            app:layout_constraintTop_toTopOf="@+id/foodTextContainer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomFoodBar"
+        style="@style/Widget.MaterialComponents.BottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/share_toolbar_height"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/shareLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/share_toolbar_height"
-        android:elevation="4dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/copyBT"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:foreground="@drawable/ic_content_copy_black_24dp"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/share_button" />
-
-        <Button
-            android:id="@+id/wpBT"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:foreground="@drawable/ic_whatsapp_logo"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/share_button" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="end"
+        app:fabAnimationMode="slide"
+        app:menu="@menu/bottom_food_bar_menu"
+        app:navigationIcon="@drawable/ic_settings" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/genBT"
-        android:layout_width="67dp"
-        android:layout_height="59dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        app:elevation="6dp"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_sort_black_24dp" />
-
-    <TextView
-        android:id="@+id/backgroundLB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:alpha="0.25"
-        android:text="@string/empty_list"
-        android:textAlignment="viewEnd"
-        android:textAllCaps="false"
-        android:textSize="56sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/shareLayout"
-        app:layout_constraintEnd_toEndOf="@+id/foodTextContainer"
-        app:layout_constraintStart_toStartOf="@+id/foodTextContainer"
-        app:layout_constraintTop_toTopOf="@+id/foodTextContainer" />
+        app:layout_anchor="@id/bottomFoodBar"
+        app:srcCompat="@drawable/ic_list" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

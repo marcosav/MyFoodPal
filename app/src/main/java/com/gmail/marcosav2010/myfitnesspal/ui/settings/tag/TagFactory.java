@@ -5,12 +5,13 @@ import android.text.InputType;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 import com.gmail.marcosav2010.myfitnesspal.R;
+import com.gmail.marcosav2010.myfitnesspal.common.Utils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.function.BiConsumer;
 
@@ -29,10 +30,10 @@ public class TagFactory {
         this.context = context;
 
         KEY_COLOR = ContextCompat.getColor(context, R.color.tag_color);
-        KEY_CLICK_COLOR = ContextCompat.getColor(context, R.color.tag_click_color);
+        KEY_CLICK_COLOR = Utils.darker(KEY_COLOR, .8f);
 
         ADD_COLOR = ContextCompat.getColor(context, R.color.add_tag_color);
-        ADD_CLICK_COLOR = ContextCompat.getColor(context, R.color.add_tag_click_color);
+        ADD_CLICK_COLOR = Utils.darker(ADD_COLOR, .8f);
     }
 
     public TagGroup createTagView(String name, boolean entry) {
@@ -97,7 +98,7 @@ public class TagFactory {
     }
 
     private void showInput(String title, boolean entry, String btName, BiConsumer<String, String> onClick, Tag base) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle(title);
 
         LinearLayout ll = new LinearLayout(context);
