@@ -58,7 +58,11 @@ public class DataStorer {
     }
 
     private void saveSession(MFPSessionRequestResult result) {
-        preferences.edit().putString(MFP_SESSION, session == null ? null : session.encode()).putLong(MFP_LOGIN_DATE, System.currentTimeMillis()).putString(MFP_LOGIN_RESULT, result.getType().name()).apply();
+        preferences.edit()
+                .putString(MFP_SESSION, session == null ? null : session.encode())
+                .putLong(MFP_LOGIN_DATE, System.currentTimeMillis())
+                .putString(MFP_LOGIN_RESULT, result.getType().name())
+                .apply();
     }
 
     private String getSavedSession() {

@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gmail.marcosav2010.myfitnesspal.R;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
-import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormater;
+import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormatter;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
 import com.gmail.marcosav2010.myfitnesspal.common.Utils;
 import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
@@ -46,7 +46,7 @@ public class FoodFragment extends Fragment {
 
     private FloatingActionButton genBT;
 
-    private EditText foodTextContainer, dateOpt, mealsOpt;
+    private EditText foodTextContainer, dateOpt, toDateOpt, mealsOpt;
     private TextView backgroundLB;
 
     private DataStorer dataStorer;
@@ -78,6 +78,7 @@ public class FoodFragment extends Fragment {
         genBT.setOnClickListener(this::onGenClick);
 
         dateOpt = root.findViewById(R.id.genDateOptField);
+        toDateOpt = root.findViewById(R.id.genToDateOptField);
         mealsOpt = root.findViewById(R.id.genMealsOptField);
 
         loadFoodPB = root.findViewById(R.id.loadFoodPB);
@@ -97,7 +98,8 @@ public class FoodFragment extends Fragment {
             }
         });
 
-        dateOpt.setOnClickListener(v -> pickDate());
+        dateOpt.setOnClickListener(v -> pickDate(false));
+        toDateOpt.setOnClickListener(v -> pickDate(true));
 
         foodTextContainer = root.findViewById(R.id.foodTextContainer);
 
@@ -120,6 +122,7 @@ public class FoodFragment extends Fragment {
         setDate(getTomorrow());
         setMeals(getString(R.string.def_meals_opt));
         queryData.setBuy(true);
+        toDateOpt.setEnabled(true);
     }
 
     private void onPrepareSelect(View v) {
@@ -127,6 +130,8 @@ public class FoodFragment extends Fragment {
         setDate(now);
         setMeals(now.get(Calendar.HOUR_OF_DAY) >= DINNER_THRESHOLD ? "2" : "1");
         queryData.setBuy(false);
+        toDateOpt.setEnabled(false);
+        toDateOpt.setText("-");
     }
 
     private Calendar getTomorrow() {
@@ -136,9 +141,25 @@ public class FoodFragment extends Fragment {
     }
 
     private void setDate(Calendar c) {
+        setDate(c, null);
+    }
+
+    private void setDate(Calendar c, Boolean to) {
         Date d = c.getTime();
-        queryData.setDate(d);
-        dateOpt.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+
+        if (to == null || to) {
+            queryData.setToDate(d);
+            toDateOpt.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+        }
+
+        if (to == null || !to) {
+            queryData.setDate(d);
+            dateOpt.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+        }
+
+        int diff = queryData.getToDate().compareTo(queryData.getDate());
+        if (toDateOpt.isEnabled() && diff < 0)
+            setDate(c);
     }
 
     private void setMeals(String meals) {
@@ -146,21 +167,19 @@ public class FoodFragment extends Fragment {
         mealsOpt.setText(meals);
     }
 
-    private void pickDate() {
+    private void pickDate(boolean to) {
         Calendar c = Calendar.getInstance();
+        c.setTime(to ? queryData.getToDate() : queryData.getDate());
+
         new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
             Calendar cal = Calendar.getInstance();
             cal.set(year, month, dayOfMonth);
-            setDate(cal);
+            setDate(cal, to);
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private String getFoodContent() {
         return foodTextContainer.getText().toString();
-    }
-
-    private void clearContent() {
-        foodTextContainer.setText("");
     }
 
     private void setContentEditable(boolean b) {
@@ -183,7 +202,7 @@ public class FoodFragment extends Fragment {
         backgroundLB.setText(R.string.generating);
         loadFoodPB.setVisibility(View.VISIBLE);
         genBT.setEnabled(false);
-        clearContent();
+        foodTextContainer.setText("");
     }
 
     private void showLoaded() {
@@ -222,7 +241,18 @@ public class FoodFragment extends Fragment {
     }
 
     private void sendFoodQuery(MFPSession session, ListerData lc) {
-        new DayFoodQueryTask(context, session, lc, new CustomFoodFormater(lc), queryData, this::handleResult).execute();
+        if (!Utils.hasInternetConnection(context)) {
+            onResultError(FoodQueryResult.Type.NO_INTERNET_ERROR);
+            return;
+        }
+
+        new DayFoodQueryTask(
+                session,
+                lc,
+                new CustomFoodFormatter(lc),
+                queryData,
+                this::handleResult
+        ).execute();
     }
 
     private boolean onNavigationItemSelected(MenuItem item) {

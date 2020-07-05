@@ -15,11 +15,9 @@ import com.gmail.marcosav2010.myfitnesspal.receivers.SessionUpdateReceiver;
 
 public class SessionRequestService extends Service {
 
-    private static final int DELAY = 120 * 1000;
+    private static final int DELAY = 30 * 1000;
     private static final int RETRY_DELAY = 10 * 1000;
     private static final int REQUEST_CODE = 98356922;
-
-    private DataStorer dataStorer;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -29,7 +27,7 @@ public class SessionRequestService extends Service {
 
     private void sendRequest() {
         try {
-            dataStorer = DataStorer.load(getApplicationContext());
+            DataStorer dataStorer = DataStorer.load(getApplicationContext());
 
             PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
 

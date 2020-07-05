@@ -33,7 +33,6 @@ public class SessionRequestTask extends AsyncTask<String, Void, MFPSessionReques
 
     protected void onPostExecute(MFPSessionRequestResult got) {
         DataStorer.load(context).setSession(got);
-        //Utils.sendNotification(context, 1, "Sesión", "Petición de nueva sesión con resultado " + got.getType().name() + " a las " + new Date().toString());
         handler.accept(got);
     }
 }
