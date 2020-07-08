@@ -14,4 +14,9 @@
         android:title="@string/bnm_share_copy"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/bfbm_add"
+        android:icon="@drawable/ic_add"
+        android:title="@string/bnm_add"
+        app:showAsAction="ifRoom" />
 </menu>

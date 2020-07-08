@@ -10,7 +10,18 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="50dp">
 
-        <EditText
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/foodRecycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingBottom="28dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
+
+        <!--<EditText
             android:id="@+id/foodTextContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -32,7 +43,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />-->
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/listOptionsToolbar"
@@ -52,7 +63,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/foodTextContainer"
+            app:layout_constraintBottom_toTopOf="@+id/foodRecycler"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/listOptionsToolbar" />
@@ -163,10 +174,10 @@
             android:textAllCaps="false"
             android:textSize="56sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/foodTextContainer"
-            app:layout_constraintEnd_toEndOf="@+id/foodTextContainer"
-            app:layout_constraintStart_toStartOf="@+id/foodTextContainer"
-            app:layout_constraintTop_toTopOf="@+id/foodTextContainer" />
+            app:layout_constraintBottom_toBottomOf="@+id/foodRecycler"
+            app:layout_constraintEnd_toEndOf="@+id/foodRecycler"
+            app:layout_constraintStart_toStartOf="@+id/foodRecycler"
+            app:layout_constraintTop_toTopOf="@+id/foodRecycler" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

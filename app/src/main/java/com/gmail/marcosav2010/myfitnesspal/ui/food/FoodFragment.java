@@ -16,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gmail.marcosav2010.myfitnesspal.R;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
@@ -25,39 +28,65 @@ import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
 import com.gmail.marcosav2010.myfitnesspal.common.Utils;
 import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
 import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryData;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.DayFoodQueryTask;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryData;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryResult;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryTask;
+import com.gmail.marcosav2010.myfitnesspal.logic.food.ListElement;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FoodFragment extends Fragment {
 
     private static final int DINNER_THRESHOLD = 16;
 
+    private static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+
     private FoodFragmentListener listener;
 
     private FloatingActionButton genBT;
 
-    private EditText foodTextContainer, dateOpt, toDateOpt, mealsOpt;
+    private FoodListAdapter foodListAdapter;
+
+    private EditText dateOpt, toDateOpt, mealsOpt;
     private TextView backgroundLB;
+    private ProgressBar loadFoodPB;
 
     private DataStorer dataStorer;
-    private ProgressBar loadFoodPB;
-    private DayFoodQueryData queryData;
+    private FoodQueryData queryData;
 
     private Context context;
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            queryData = savedInstanceState.getParcelable("queryData");
+
+            mealsOpt.setText(queryData.getMeals());
+            dateOpt.setText(dateFormat.format(queryData.getDate()));
+            toDateOpt.setText(dateFormat.format(queryData.getToDate()));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("queryData", queryData);
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         dataStorer = DataStorer.load(getContext());
-        queryData = new DayFoodQueryData();
+        queryData = new FoodQueryData();
 
         View root = inflater.inflate(R.layout.fragment_food, container, false);
 
@@ -83,6 +112,13 @@ public class FoodFragment extends Fragment {
 
         loadFoodPB = root.findViewById(R.id.loadFoodPB);
 
+        RecyclerView foodRecycler = root.findViewById(R.id.foodRecycler);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        foodRecycler.setLayoutManager(layoutManager);
+
+        foodListAdapter = new FoodListAdapter();
+        foodRecycler.setAdapter(foodListAdapter);
+
         mealsOpt.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -100,8 +136,6 @@ public class FoodFragment extends Fragment {
 
         dateOpt.setOnClickListener(v -> pickDate(false));
         toDateOpt.setOnClickListener(v -> pickDate(true));
-
-        foodTextContainer = root.findViewById(R.id.foodTextContainer);
 
         buyRB.callOnClick();
 
@@ -149,12 +183,12 @@ public class FoodFragment extends Fragment {
 
         if (to == null || to) {
             queryData.setToDate(d);
-            toDateOpt.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+            toDateOpt.setText(dateFormat.format(d));
         }
 
         if (to == null || !to) {
             queryData.setDate(d);
-            dateOpt.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+            dateOpt.setText(dateFormat.format(d));
         }
 
         int diff = queryData.getToDate().compareTo(queryData.getDate());
@@ -179,14 +213,12 @@ public class FoodFragment extends Fragment {
     }
 
     private String getFoodContent() {
-        return foodTextContainer.getText().toString();
-    }
-
-    private void setContentEditable(boolean b) {
-        foodTextContainer.setClickable(b);
-        foodTextContainer.setCursorVisible(b);
-        foodTextContainer.setFocusable(b);
-        foodTextContainer.setFocusableInTouchMode(b);
+        String header = getString(queryData.isBuy() ? R.string.buy_header : R.string.prepare_header);
+        String content = foodListAdapter.getCurrentList().stream()
+                .filter(e -> e.isChecked() && !e.getName().isEmpty())
+                .map(e -> "\n - " + e.getName())
+                .collect(Collectors.joining());
+        return content.isEmpty() ? "" : header + content;
     }
 
     private void showEmpty() {
@@ -197,16 +229,15 @@ public class FoodFragment extends Fragment {
     }
 
     private void showLoading() {
-        setContentEditable(false);
         backgroundLB.setVisibility(View.VISIBLE);
         backgroundLB.setText(R.string.generating);
         loadFoodPB.setVisibility(View.VISIBLE);
         genBT.setEnabled(false);
-        foodTextContainer.setText("");
+
+        foodListAdapter.submitList(new ArrayList<>());
     }
 
     private void showLoaded() {
-        setContentEditable(true);
         backgroundLB.setVisibility(View.INVISIBLE);
         loadFoodPB.setVisibility(View.INVISIBLE);
         genBT.setEnabled(true);
@@ -246,7 +277,7 @@ public class FoodFragment extends Fragment {
             return;
         }
 
-        new DayFoodQueryTask(
+        new FoodQueryTask(
                 session,
                 lc,
                 new CustomFoodFormatter(lc),
@@ -257,18 +288,34 @@ public class FoodFragment extends Fragment {
 
     private boolean onNavigationItemSelected(MenuItem item) {
         Integer msg = null;
-        String content = getFoodContent();
 
-        if (content.trim().isEmpty())
-            msg = R.string.no_content;
-        else
-            switch (item.getItemId()) {
-                case R.id.bfbm_copy:
+        switch (item.getItemId()) {
+            case R.id.bfbm_copy: {
+                String content = getFoodContent();
+
+                if (content.trim().isEmpty())
+                    msg = R.string.no_content;
+                else
                     msg = Utils.copyToClipboard(getActivity(), content);
-                    break;
-                case R.id.bfbm_wp:
-                    msg = Utils.shareWhatsApp(getActivity(), content);
+
+                break;
             }
+            case R.id.bfbm_wp: {
+                String content = getFoodContent();
+
+                if (content.trim().isEmpty())
+                    msg = R.string.no_content;
+                else
+                    msg = Utils.shareWhatsApp(getActivity(), content);
+
+                break;
+            }
+            case R.id.bfbm_add:
+                List<ListElement> list = new ArrayList<>(foodListAdapter.getCurrentList());
+                list.add(new ListElement());
+                foodListAdapter.submitList(list);
+                backgroundLB.setVisibility(View.INVISIBLE);
+        }
 
         if (msg != null)
             Toast.makeText(getContext(), getString(msg), Toast.LENGTH_SHORT).show();
@@ -289,7 +336,7 @@ public class FoodFragment extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
 
-    private void onResultGot(List<String> got) {
+    private void onResultGot(List<ListElement> got) {
         if (got.isEmpty()) {
             showEmpty();
             return;
@@ -297,7 +344,6 @@ public class FoodFragment extends Fragment {
 
         showLoaded();
 
-        foodTextContainer.append(getString(queryData.isBuy() ? R.string.buy_header : R.string.prepare_header));
-        got.forEach(f -> foodTextContainer.append("\n - " + f));
+        foodListAdapter.submitList(got);
     }
 }
