@@ -8,18 +8,21 @@ import com.gmail.marcosav2010.myfitnesspal.common.Utils;
 import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class SessionRequestTask extends AsyncTask<String, Void, MFPSessionRequestResult> {
 
-    private final Context context;
+    private final WeakReference<Context> context;
     private final Consumer<MFPSessionRequestResult> handler;
 
+    public SessionRequestTask(Context context, Consumer<MFPSessionRequestResult> handler) {
+        this.context = new WeakReference<>(context);
+        this.handler = handler;
+    }
+
     protected MFPSessionRequestResult doInBackground(String... login) {
-        if (!Utils.hasInternetConnection(context))
+        if (!Utils.hasInternetConnection(context.get()))
             return MFPSessionRequestResult.from(MFPSessionRequestResult.Type.NO_INTERNET_ERROR, null);
 
         try {
@@ -32,7 +35,7 @@ public class SessionRequestTask extends AsyncTask<String, Void, MFPSessionReques
     }
 
     protected void onPostExecute(MFPSessionRequestResult got) {
-        DataStorer.load(context).setSession(got);
+        DataStorer.load(context.get()).setSession(got);
         handler.accept(got);
     }
 }

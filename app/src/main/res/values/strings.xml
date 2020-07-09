@@ -6,6 +6,7 @@
     <string name="bnm_settings">Settings</string>
     <string name="bnm_add">Add</string>
 
+    <string name="choose_meals">Choose meals:</string>
     <string name="def_meals_opt">0123</string>
 
     <string name="empty_list">Empty</string>

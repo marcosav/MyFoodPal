@@ -22,15 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.cunoraz.tagview.Tag;
 import com.gmail.marcosav2010.json.JSONException;
 import com.gmail.marcosav2010.json.JSONObject;
 import com.gmail.marcosav2010.myfitnesspal.R;
-import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
-import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
 import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.gmail.marcosav2010.myfitnesspal.ui.settings.tag.ETag;
@@ -55,15 +55,13 @@ import lombok.RequiredArgsConstructor;
 
 public class SettingsFragment extends Fragment {
 
+    private SettingsViewModel viewModel;
+
     private LinearLayout settingsLinearLayout, tagGroupsLinearLayout;
     private ProgressBar progressBar;
 
-    private DataStorer dataStorer;
-    private PreferenceManager preferenceManager;
-
     private TextInputEditText usernameET, passwordET;
     private TextInputLayout usernameTIL, passwordTIL;
-    private TextView loginDateLB;
 
     private Map<String, TagGroup> tagGroups = new HashMap<>();
 
@@ -83,10 +81,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        context = root.getContext();
-
-        dataStorer = DataStorer.load(context);
-        preferenceManager = dataStorer.getPreferenceManager();
+        context = getContext();
 
         tf = new TagFactory(context);
 
@@ -98,8 +93,11 @@ public class SettingsFragment extends Fragment {
         tagGroupsLinearLayout = root.findViewById(R.id.tagGroupsLL);
         progressBar = root.findViewById(R.id.settingsProgressBar);
 
-        loginDateLB = root.findViewById(R.id.loginDateLB);
-        loginDateLB.setOnClickListener(e -> loginDateLB.setText(String.format("%s %s", new Date(dataStorer.getLoginDate()), dataStorer.getLoginResult())));
+        TextView loginDateLB = root.findViewById(R.id.loginDateLB);
+        loginDateLB.setOnClickListener(e -> {
+            loginDateLB.setText(String.format("%s %s",
+                    new Date(viewModel.getLoginDate()), viewModel.getLoginResult()));
+        });
 
         usernameET = root.findViewById(R.id.usernameET);
         passwordET = root.findViewById(R.id.passwordET);
@@ -112,24 +110,16 @@ public class SettingsFragment extends Fragment {
         settingsLinearLayout.addView(createDivider(), 0);
         settingsLinearLayout.addView(createSectionTitle(getString(R.string.s_credentials_title)), 1);
 
-        load();
         return root;
     }
 
-    private boolean onTopBarMenuOption(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sm_reload:
-                load();
-                break;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-            case R.id.sm_save:
-                savePreferences();
-                break;
+        viewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
-            case R.id.sm_export:
-                exportPreferences();
-        }
-        return super.onOptionsItemSelected(item);
+        load();
     }
 
     private void load() {
@@ -156,7 +146,7 @@ public class SettingsFragment extends Fragment {
     private void addContent() {
         clearMFPConfigSections();
 
-        preferenceManager.getListerData().getAllConfig().forEach((k, v) -> {
+        viewModel.getAllConfig().forEach((k, v) -> {
             TagGroup tags;
 
             String name = k.replaceFirst("p_", "").replaceAll("_", " ");
@@ -231,7 +221,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private View createDivider() {
-        View dividerView = new View(getContext());
+        View dividerView = new View(context);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, (int) (getResources().getDisplayMetrics().density * 1));
         dividerView.setLayoutParams(lp);
@@ -263,7 +253,7 @@ public class SettingsFragment extends Fragment {
         loginPB.setVisibility(View.INVISIBLE);
 
         if (type == MFPSessionRequestResult.Type.SUCCESS) {
-            preferenceManager.saveCredentials(username.toString(), password.toString());
+            viewModel.saveMFPCredentials(username.toString(), password.toString());
 
             username.clear();
             password.clear();
@@ -301,7 +291,10 @@ public class SettingsFragment extends Fragment {
         if (username.length() != 0 && password.length() != 0) {
             Toast.makeText(context, R.string.settings_saving_and_checking_credentials, Toast.LENGTH_LONG).show();
             loginPB.setVisibility(View.VISIBLE);
-            new SessionRequestTask(context, r -> onCredentialsCheck(r, username, password)).execute(username.toString(), password.toString());
+
+            new SessionRequestTask(context, r -> {
+                onCredentialsCheck(r, username, password);
+            }).execute(username.toString(), password.toString());
         } else
             Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_LONG).show();
     }
@@ -316,7 +309,7 @@ public class SettingsFragment extends Fragment {
                 json.put(n, tags.stream().limit(tags.size() - 1).map(tag -> (ETag) tag).collect(Collectors.toMap(t -> t.key, t -> t.value)));
         });
 
-        preferenceManager.saveMFPConfig(json.toString());
+        viewModel.saveMFPConfig(json.toString());
     }
 
     private void exportPreferences() {
@@ -324,7 +317,7 @@ public class SettingsFragment extends Fragment {
         builder.setTitle("Raw Config");
 
         EditText input = new EditText(requireContext());
-        input.setText(preferenceManager.getMFPConfig());
+        input.setText(viewModel.getMFPConfig());
 
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
@@ -334,7 +327,7 @@ public class SettingsFragment extends Fragment {
 
             try {
                 JSONObject parsed = new JSONObject(newConf);
-                preferenceManager.saveMFPConfig(parsed.toString());
+                viewModel.saveMFPConfig(parsed.toString());
                 load();
 
             } catch (JSONException ex) {
@@ -370,5 +363,21 @@ public class SettingsFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             settingsFragment.addContent();
         }
+    }
+
+    private boolean onTopBarMenuOption(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sm_reload:
+                load();
+                break;
+
+            case R.id.sm_save:
+                savePreferences();
+                break;
+
+            case R.id.sm_export:
+                exportPreferences();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

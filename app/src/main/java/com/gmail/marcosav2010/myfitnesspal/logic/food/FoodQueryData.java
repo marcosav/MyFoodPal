@@ -8,9 +8,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class FoodQueryData implements Parcelable {
 
     private String meals;

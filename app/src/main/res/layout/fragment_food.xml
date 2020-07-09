@@ -1,202 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.gmail.marcosav2010.myfitnesspal.ui.food.FoodViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/foodRecycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingBottom="28dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
-
-        <!--<EditText
-            android:id="@+id/foodTextContainer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
-            android:autofillHints='@null'
-            android:background="@null"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:gravity="top"
-            android:hint='@null'
-            android:inputType="textMultiLine|text"
-            android:textSize="21sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />-->
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/listOptionsToolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/gen_options_toolbar_height"
-            android:elevation="6dp"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp">
 
-        <ProgressBar
-            android:id="@+id/loadFoodPB"
-            style="@android:style/Widget.Material.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/foodRecycler"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listOptionsToolbar" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/foodRecycler"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="28dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/genOptLayout" />
 
-        <LinearLayout
-            android:id="@+id/genOptLayout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/gen_options_toolbar_height"
-            android:elevation="6dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/listOptionsToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/gen_options_toolbar_height"
+                android:elevation="6dp"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioGroup
-                android:id="@+id/genOptRBG"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/buyRB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:drawableStart="@drawable/ic_shop"
-                    android:paddingHorizontal="10dp" />
-
-                <Space
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:id="@+id/prepareRB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:checked="false"
-                    android:drawableStart="@drawable/ic_restaurant"
-                    android:paddingHorizontal="10dp" />
-
-            </RadioGroup>
+            <ProgressBar
+                android:id="@+id/loadFoodPB"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/foodRecycler"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/listOptionsToolbar" />
 
             <LinearLayout
+                android:id="@+id/genOptLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="@dimen/gen_options_toolbar_height"
+                android:elevation="6dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <EditText
-                    android:id="@+id/genDateOptField"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight=".8"
-                    android:autofillHints="@null"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:drawableStart="@drawable/ic_date"
-                    android:ems="10"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@null"
-                    android:inputType="date"
-                    android:textAlignment="center" />
+                <RadioGroup
+                    android:id="@+id/genOptRBG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/genToDateOptField"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight=".8"
-                    android:autofillHints="@null"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:drawableStart="@drawable/ic_date"
-                    android:ems="10"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@null"
-                    android:inputType="date"
-                    android:textAlignment="center" />
+                    <RadioButton
+                        android:id="@+id/buyRB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:drawableStart="@drawable/ic_shop"
+                        android:paddingHorizontal="10dp" />
 
-                <EditText
-                    android:id="@+id/genMealsOptField"
-                    android:layout_width="0dp"
+                    <Space
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <RadioButton
+                        android:id="@+id/prepareRB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:drawableStart="@drawable/ic_restaurant"
+                        android:paddingHorizontal="10dp" />
+
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight=".5"
-                    android:autofillHints="@null"
-                    android:drawableStart="@drawable/ic_numbered"
-                    android:ems="10"
-                    android:hint="@null"
-                    android:inputType="number"
-                    android:maxLength="4"
-                    android:textAlignment="center" />
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/genDateOptField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".8"
+                        android:autofillHints="@null"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:drawableStart="@drawable/ic_date"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@null"
+                        android:inputType="date"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/genToDateOptField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".8"
+                        android:autofillHints="@null"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:drawableStart="@drawable/ic_date"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@null"
+                        android:inputType="date"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/genMealsOptField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".5"
+                        android:autofillHints="@null"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:drawableStart="@drawable/ic_numbered"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@null"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:text="@{viewModel.meals}"
+                        android:textAlignment="center" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/backgroundLB"
+            <TextView
+                android:id="@+id/backgroundLB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.25"
+                android:text="@string/empty_list"
+                android:textAlignment="viewEnd"
+                android:textAllCaps="false"
+                android:textSize="56sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/foodRecycler"
+                app:layout_constraintEnd_toEndOf="@+id/foodRecycler"
+                app:layout_constraintStart_toStartOf="@+id/foodRecycler"
+                app:layout_constraintTop_toTopOf="@+id/foodRecycler" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomFoodBar"
+            style="@style/Widget.MaterialComponents.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            app:fabAlignmentMode="end"
+            app:fabAnimationMode="slide"
+            app:menu="@menu/bottom_food_bar_menu"
+            app:navigationIcon="@drawable/ic_settings" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/genBT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.25"
-            android:text="@string/empty_list"
-            android:textAlignment="viewEnd"
-            android:textAllCaps="false"
-            android:textSize="56sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/foodRecycler"
-            app:layout_constraintEnd_toEndOf="@+id/foodRecycler"
-            app:layout_constraintStart_toStartOf="@+id/foodRecycler"
-            app:layout_constraintTop_toTopOf="@+id/foodRecycler" />
+            app:layout_anchor="@id/bottomFoodBar"
+            app:srcCompat="@drawable/ic_list" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomFoodBar"
-        style="@style/Widget.MaterialComponents.BottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="end"
-        app:fabAnimationMode="slide"
-        app:menu="@menu/bottom_food_bar_menu"
-        app:navigationIcon="@drawable/ic_settings" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/genBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/bottomFoodBar"
-        app:srcCompat="@drawable/ic_list" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
