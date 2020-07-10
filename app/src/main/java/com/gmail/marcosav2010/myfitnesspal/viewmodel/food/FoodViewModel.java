@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.ui.food;
+package com.gmail.marcosav2010.myfitnesspal.viewmodel.food;
 
 import android.app.Application;
 
@@ -12,14 +12,14 @@ import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormatter;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
 import com.gmail.marcosav2010.myfitnesspal.common.Utils;
-import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
-import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryData;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryResult;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.FoodQueryTask;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.ListElement;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
+import com.gmail.marcosav2010.myfitnesspal.model.food.FoodQueryData;
+import com.gmail.marcosav2010.myfitnesspal.model.food.ListElement;
+import com.gmail.marcosav2010.myfitnesspal.storage.DataStorer;
+import com.gmail.marcosav2010.myfitnesspal.storage.PreferenceManager;
+import com.gmail.marcosav2010.myfitnesspal.tasks.FoodQueryResult;
+import com.gmail.marcosav2010.myfitnesspal.tasks.FoodQueryTask;
+import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestResult;
+import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -114,8 +114,8 @@ public class FoodViewModel extends AndroidViewModel {
         return new FoodQueryData(
                 meals.getValue(),
                 buying,
-                date.getValue().getTime(),
-                toDate.getValue().getTime()
+                Objects.requireNonNull(date.getValue()).getTime(),
+                Objects.requireNonNull(toDate.getValue()).getTime()
         );
     }
 
@@ -134,7 +134,7 @@ public class FoodViewModel extends AndroidViewModel {
                 setErrorResult(FoodQueryResult.Type.NO_SESSION);
             } else {
                 new SessionRequestTask(getApplication().getApplicationContext(), r -> {
-                    if (r.getType() == MFPSessionRequestResult.Type.SUCCESS)
+                    if (r.getType() == SessionRequestResult.Type.SUCCESS)
                         sendFoodQuery(dataStorer.getSession(), lc);
                     else
                         setErrorResult(FoodQueryResult.Type.NO_SESSION);
@@ -165,7 +165,7 @@ public class FoodViewModel extends AndroidViewModel {
     public String getFoodListOutput() {
         String header = getApplication().getString(buying ?
                 R.string.buy_header : R.string.prepare_header);
-        String content = getFoodList().getValue().stream()
+        String content = Objects.requireNonNull(getFoodList().getValue()).stream()
                 .filter(e -> e.isChecked() && !e.getName().isEmpty())
                 .map(e -> "\n - " + e.getName())
                 .collect(Collectors.joining());

@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.gmail.marcosav2010.myfitnesspal.common.Utils;
-import com.gmail.marcosav2010.myfitnesspal.logic.DataStorer;
-import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.SessionRequestTask;
 import com.gmail.marcosav2010.myfitnesspal.receivers.SessionUpdateReceiver;
+import com.gmail.marcosav2010.myfitnesspal.storage.DataStorer;
+import com.gmail.marcosav2010.myfitnesspal.storage.PreferenceManager;
+import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestResult;
+import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestTask;
 
 public class SessionRequestService extends Service {
 
@@ -40,7 +40,7 @@ public class SessionRequestService extends Service {
         }
     }
 
-    private void handleResult(MFPSessionRequestResult r) {
+    private void handleResult(SessionRequestResult r) {
         try {
             switch (r.getType()) {
                 case SUCCESS:

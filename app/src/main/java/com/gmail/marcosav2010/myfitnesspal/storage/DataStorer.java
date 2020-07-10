@@ -1,11 +1,10 @@
-package com.gmail.marcosav2010.myfitnesspal.logic;
+package com.gmail.marcosav2010.myfitnesspal.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
-import com.gmail.marcosav2010.myfitnesspal.logic.config.PreferenceManager;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.MFPSessionRequestResult;
+import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestResult;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -52,12 +51,12 @@ public class DataStorer {
         return session;
     }
 
-    public void setSession(MFPSessionRequestResult result) {
+    public void setSession(SessionRequestResult result) {
         this.session = result.getResult();
         saveSession(result);
     }
 
-    private void saveSession(MFPSessionRequestResult result) {
+    private void saveSession(SessionRequestResult result) {
         preferences.edit()
                 .putString(MFP_SESSION, session == null ? null : session.encode())
                 .putLong(MFP_LOGIN_DATE, System.currentTimeMillis())

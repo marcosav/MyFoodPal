@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.gmail.marcosav2010.myfitnesspal.ui.food.FoodFragment;
-import com.gmail.marcosav2010.myfitnesspal.ui.food.FoodFragmentListener;
-import com.gmail.marcosav2010.myfitnesspal.ui.settings.SettingsFragment;
+import com.gmail.marcosav2010.myfitnesspal.view.food.FoodFragment;
+import com.gmail.marcosav2010.myfitnesspal.view.food.FoodFragmentListener;
+import com.gmail.marcosav2010.myfitnesspal.view.settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements FoodFragmentListener {
 
@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
             settingsFragment = (SettingsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "settingsFragment");
 
         } else {
-            foodFragment = new FoodFragment();
-            settingsFragment = new SettingsFragment();
+            if (foodFragment == null)
+                foodFragment = new FoodFragment();
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragmentHost, foodFragment);
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (foodFragment.isAdded())
+        if (foodFragment != null && foodFragment.isAdded())
             getSupportFragmentManager().putFragment(outState, "foodFragment", foodFragment);
-        if (settingsFragment.isAdded())
+        if (settingsFragment != null && settingsFragment.isAdded())
             getSupportFragmentManager().putFragment(outState, "settingsFragment", settingsFragment);
     }
 
@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
+
+        if (settingsFragment == null)
+            settingsFragment = new SettingsFragment();
+
         ft.replace(R.id.fragmentHost, settingsFragment);
         ft.addToBackStack(null);
         ft.commit();

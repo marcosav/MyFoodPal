@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.ui.food;
+package com.gmail.marcosav2010.myfitnesspal.view.food;
 
 public interface FoodFragmentListener {
 

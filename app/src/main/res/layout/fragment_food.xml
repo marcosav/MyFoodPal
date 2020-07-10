@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.gmail.marcosav2010.myfitnesspal.ui.food.FoodViewModel" />
+            type="com.gmail.marcosav2010.myfitnesspal.viewmodel.food.FoodViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.ui.food;
+package com.gmail.marcosav2010.myfitnesspal.view.food;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -24,7 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gmail.marcosav2010.myfitnesspal.R;
 import com.gmail.marcosav2010.myfitnesspal.common.Utils;
 import com.gmail.marcosav2010.myfitnesspal.databinding.FragmentFoodBinding;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.ListElement;
+import com.gmail.marcosav2010.myfitnesspal.model.food.ListElement;
+import com.gmail.marcosav2010.myfitnesspal.viewmodel.food.FoodViewModel;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

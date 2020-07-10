@@ -6,7 +6,7 @@
 
         <variable
             name="element"
-            type="com.gmail.marcosav2010.myfitnesspal.logic.food.ListElement" />
+            type="com.gmail.marcosav2010.myfitnesspal.model.food.ListElement" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

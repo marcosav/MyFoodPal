@@ -1,28 +1,25 @@
-package com.gmail.marcosav2010.myfitnesspal.logic.food;
+package com.gmail.marcosav2010.myfitnesspal.tasks;
 
 import com.gmail.marcosav2010.myfitnesspal.R;
-
-import java.util.List;
+import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(staticName = "from")
-public class FoodQueryResult {
+@AllArgsConstructor(staticName = "from")
+public class SessionRequestResult {
 
     @Getter
-    private final Type type;
+    private Type type;
     @Getter
-    private final List<ListElement> result;
+    private MFPSession result;
 
     @NoArgsConstructor
     @AllArgsConstructor
     public enum Type {
-        UNKNOWN_ERROR(R.string.food_result_unknown_error),
+        LOGIN_ERROR(R.string.session_request_error_login),
         IO_ERROR(R.string.result_io_error),
-        NO_SESSION(R.string.food_result_no_session_error),
         NO_INTERNET_ERROR(R.string.result_no_internet_error),
         SUCCESS;
 

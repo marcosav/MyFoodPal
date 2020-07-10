@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.logic.food;
+package com.gmail.marcosav2010.myfitnesspal.model.food;
 
 import android.os.Parcel;
 import android.os.Parcelable;

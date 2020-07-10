@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.ui.food;
+package com.gmail.marcosav2010.myfitnesspal.view.food;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gmail.marcosav2010.myfitnesspal.databinding.FoodHolderBinding;
-import com.gmail.marcosav2010.myfitnesspal.logic.food.ListElement;
+import com.gmail.marcosav2010.myfitnesspal.model.food.ListElement;
 
 import lombok.Getter;
 

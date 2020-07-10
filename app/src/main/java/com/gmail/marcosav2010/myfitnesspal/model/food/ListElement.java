@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.logic.food;
+package com.gmail.marcosav2010.myfitnesspal.model.food;
 
 import lombok.Getter;
 import lombok.Setter;

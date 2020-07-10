@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfitnesspal.logic.config;
+package com.gmail.marcosav2010.myfitnesspal.storage;
 
 import android.content.SharedPreferences;
 
