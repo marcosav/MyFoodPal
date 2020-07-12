@@ -1,2 +1,2 @@
 include ':app', ':myfitnesspal-api'
-rootProject.name='mavA'
+rootProject.name='MyFoodPal'

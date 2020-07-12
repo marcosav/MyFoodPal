@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmail.marcosav2010.myfitnesspal">
+    package="com.gmail.marcosav2010.myfoodpal">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.gmail.marcosav2010.myfoodpal.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -28,11 +28,11 @@
         </activity>
 
         <service
-            android:name=".services.SessionService"
+            android:name="com.gmail.marcosav2010.myfoodpal.services.SessionService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name=".receivers.BootReceiver"
+            android:name="com.gmail.marcosav2010.myfoodpal.receivers.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

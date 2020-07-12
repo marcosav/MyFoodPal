@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">mav</string>
+    <string name="app_name">MyFoodPal</string>
 
     <string name="bnm_share_wp">WhatsApp</string>
     <string name="bnm_share_copy">Copy</string>
