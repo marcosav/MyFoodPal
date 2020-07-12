@@ -21,12 +21,12 @@ public class SessionRequestTask extends AsyncTask<String, Void, SessionRequestRe
         this.handler = handler;
     }
 
-    protected SessionRequestResult doInBackground(String... login) {
-        if (!Utils.hasInternetConnection(context.get()))
+    public static SessionRequestResult execute(Context context, String user, String password) {
+        if (!Utils.hasInternetConnection(context))
             return SessionRequestResult.from(SessionRequestResult.Type.NO_INTERNET_ERROR, null);
-
         try {
-            return SessionRequestResult.from(SessionRequestResult.Type.SUCCESS, MFPSession.create(login[0], login[1]));
+            MFPSession session = MFPSession.create(user, password);
+            return SessionRequestResult.from(SessionRequestResult.Type.SUCCESS, session);
         } catch (IOException ex) {
             return SessionRequestResult.from(SessionRequestResult.Type.IO_ERROR, null);
         } catch (Exception ex) {
@@ -34,8 +34,16 @@ public class SessionRequestTask extends AsyncTask<String, Void, SessionRequestRe
         }
     }
 
-    protected void onPostExecute(SessionRequestResult got) {
-        DataStorer.load(context.get()).setSession(got);
+    public static void postExecute(Context context, SessionRequestResult got, Consumer<SessionRequestResult> handler) {
+        DataStorer.load(context).setSession(got);
         handler.accept(got);
+    }
+
+    protected SessionRequestResult doInBackground(String... login) {
+        return execute(context.get(), login[0], login[1]);
+    }
+
+    protected void onPostExecute(SessionRequestResult got) {
+        postExecute(context.get(), got, handler);
     }
 }

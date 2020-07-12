@@ -2,41 +2,51 @@ package com.gmail.marcosav2010.myfitnesspal.services;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
 
-import com.gmail.marcosav2010.myfitnesspal.common.Utils;
-import com.gmail.marcosav2010.myfitnesspal.receivers.SessionUpdateReceiver;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
+
+import com.gmail.marcosav2010.myfitnesspal.receivers.BootReceiver;
 import com.gmail.marcosav2010.myfitnesspal.storage.DataStorer;
 import com.gmail.marcosav2010.myfitnesspal.storage.PreferenceManager;
 import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestResult;
 import com.gmail.marcosav2010.myfitnesspal.tasks.SessionRequestTask;
 
-public class SessionRequestService extends Service {
+public class SessionService extends JobIntentService {
 
-    private static final int DELAY = 30 * 1000;
-    private static final int RETRY_DELAY = 10 * 1000;
-    private static final int REQUEST_CODE = 98356922;
+    private static final int DELAY = 3 * 3600 * 1000 / 2;
+    private static final int RETRY_DELAY = 30 * 1000;
+
+    private static final int REQUEST_CODE = 98356921;
+    private static final int JOB_ID = 1;
+
+    public static void enqueueWork(Context context, Intent intent) {
+        enqueueWork(context, SessionService.class, JOB_ID, intent);
+    }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    protected void onHandleWork(@NonNull Intent intent) {
         sendRequest();
-        return super.onStartCommand(intent, flags, startId);
     }
 
     private void sendRequest() {
         try {
             DataStorer dataStorer = DataStorer.load(getApplicationContext());
-
             PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
+            String user = preferenceManager.getMFPUsername(),
+                    password = preferenceManager.getMFPPassword();
 
-            String user = preferenceManager.getMFPUsername(), password = preferenceManager.getMFPPassword();
-            if (user != null && password != null)
-                new SessionRequestTask(getApplicationContext(), this::handleResult).execute(user, password);
+            if (user != null && password != null) {
+                SessionRequestResult res = SessionRequestTask
+                        .execute(getApplicationContext(), user, password);
+                SessionRequestTask.postExecute(getApplicationContext(), res, this::handleResult);
+            }
 
         } catch (Exception ex) {
-            Utils.sendNotification(getApplicationContext(), 2, "Error on send", ex + " " + ex.getMessage());
+            /*Log.d("TEST", ex.getMessage(), ex);
+            Utils.sendNotification(getApplicationContext(), 2, "Error on send", ex + " " + ex.getMessage());*/
         }
     }
 
@@ -51,24 +61,18 @@ public class SessionRequestService extends Service {
                     repeat(RETRY_DELAY);
             }
         } catch (Exception ex) {
-            Utils.sendNotification(getApplicationContext(), 3, "Error on handle", ex + " " + ex.getMessage());
+            /*Log.d("TEST", ex.getMessage(), ex);
+            Utils.sendNotification(getApplicationContext(), 3, "Error on handle", ex + " " + ex.getMessage());*/
         }
     }
 
     private void repeat(long wait) {
-        Intent intent = new Intent(this, SessionUpdateReceiver.class);
+        Intent intent = new Intent(this, BootReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (alarmManager == null)
             return;
         alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + wait, pendingIntent);
-
-        //Utils.sendNotification(getApplicationContext(), 4, "Repeating in " + (wait / 1000) + " seconds", new Date().toString());
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }

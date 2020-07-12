@@ -33,7 +33,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 public class FoodFragment extends Fragment {
@@ -268,10 +267,7 @@ public class FoodFragment extends Fragment {
                 break;
             }
             case R.id.bfbm_add:
-                List<ListElement> list = new ArrayList<>(foodListAdapter.getCurrentList());
-                list.add(new ListElement());
-                foodListAdapter.submitList(list);
-                backgroundLB.setVisibility(View.INVISIBLE);
+                viewModel.addElement(new ListElement());
         }
 
         if (msg != null)

@@ -171,4 +171,11 @@ public class FoodViewModel extends AndroidViewModel {
                 .collect(Collectors.joining());
         return content.isEmpty() ? "" : header + content;
     }
+
+    public void addElement(ListElement listElement) {
+        List<ListElement> l = new ArrayList<>(Objects.requireNonNull(foodList.getValue()));
+        l.add(listElement);
+        result.setValue(FoodQueryResult.from(FoodQueryResult.Type.SUCCESS, null));
+        foodList.setValue(l);
+    }
 }

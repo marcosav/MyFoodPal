@@ -28,16 +28,17 @@
         </activity>
 
         <service
-            android:name=".services.SessionRequestService"
-            android:enabled="true" />
+            android:name=".services.SessionService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name=".receivers.SessionUpdateReceiver"
+            android:name=".receivers.BootReceiver"
             android:enabled="true"
             android:exported="true">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </receiver>
     </application>
 
