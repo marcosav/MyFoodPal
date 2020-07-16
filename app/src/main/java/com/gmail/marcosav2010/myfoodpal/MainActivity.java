@@ -6,9 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragment;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragmentListener;
+import com.gmail.marcosav2010.myfoodpal.view.food.RawFoodFragment;
 import com.gmail.marcosav2010.myfoodpal.view.settings.SettingsFragment;
+
+import java.util.Collection;
 
 public class MainActivity extends AppCompatActivity implements FoodFragmentListener {
 
@@ -22,8 +26,10 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            foodFragment = (FoodFragment) getSupportFragmentManager().getFragment(savedInstanceState, "foodFragment");
-            settingsFragment = (SettingsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "settingsFragment");
+            foodFragment = (FoodFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "foodFragment");
+            settingsFragment = (SettingsFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "settingsFragment");
 
         } else {
             if (foodFragment == null)
@@ -56,6 +62,17 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
             settingsFragment = new SettingsFragment();
 
         ft.replace(R.id.fragmentHost, settingsFragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    @Override
+    public void onRawFoodListOpen(Collection<Food> foodList) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+
+        ft.replace(R.id.fragmentHost, RawFoodFragment.newInstance(foodList));
         ft.addToBackStack(null);
         ft.commit();
     }

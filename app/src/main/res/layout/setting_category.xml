@@ -49,5 +49,7 @@
         android:layout_marginBottom="20dp"
         android:clipToPadding="false"
         android:paddingStart="6dp"
-        android:paddingEnd="6dp" />
+        android:paddingEnd="6dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/setting_category" />
 </LinearLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.food.RawFoodFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back"
+        app:title="@string/title_raw_food" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rawFoodRecycler"
+        android:name="com.gmail.marcosav2010.myfoodpal.view.food.RawFoodFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentBottom="true"
+        tools:listitem="@layout/raw_food_holder" />
+</RelativeLayout>

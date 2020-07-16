@@ -1,8 +1,10 @@
 package com.gmail.marcosav2010.myfoodpal.tasks;
 
+import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
 
+import java.util.Collection;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -11,12 +13,15 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(staticName = "from")
+@AllArgsConstructor(staticName = "from")
 public class FoodQueryResult {
 
     @Getter
     private final Type type;
     @Getter
-    private final List<ListElement> result;
+    private List<ListElement> result;
+    @Getter
+    private Collection<Food> rawList;
 
     @NoArgsConstructor
     @AllArgsConstructor

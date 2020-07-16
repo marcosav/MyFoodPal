@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -15,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.common.Utils;
-import com.gmail.marcosav2010.myfoodpal.databinding.FragmentFoodBinding;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
+import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryResult;
 import com.gmail.marcosav2010.myfoodpal.viewmodel.food.FoodViewModel;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -41,7 +41,6 @@ public class FoodFragment extends Fragment {
 
     private static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
 
-    private FragmentFoodBinding binding;
     private FoodViewModel viewModel;
 
     private FoodFragmentListener listener;
@@ -68,9 +67,7 @@ public class FoodFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_food, container, false);
-        View root = binding.getRoot();
+        View root = inflater.inflate(R.layout.fragment_food, container, false);
 
         BottomAppBar bottomBar = root.findViewById(R.id.bottomFoodBar);
         genBT = root.findViewById(R.id.genBT);
@@ -90,6 +87,15 @@ public class FoodFragment extends Fragment {
         foodListAdapter = new FoodListAdapter();
         foodRecycler.setAdapter(foodListAdapter);
 
+        ImageView rawBT = root.findViewById(R.id.rawBT);
+        rawBT.setOnClickListener(v -> {
+            FoodQueryResult r = viewModel.getResult().getValue();
+            if (r != null && r.getType() == FoodQueryResult.Type.SUCCESS)
+                listener.onRawFoodListOpen(r.getRawList());
+            else
+                Toast.makeText(getContext(), R.string.no_food_loaded, Toast.LENGTH_LONG).show();
+        });
+
         return root;
     }
 
@@ -104,7 +110,6 @@ public class FoodFragment extends Fragment {
         EditText mealsOpt = view.findViewById(R.id.genMealsOptField);
 
         viewModel = new ViewModelProvider(requireActivity()).get(FoodViewModel.class);
-        binding.setViewModel(viewModel);
 
         viewModel.getFoodList().observe(getViewLifecycleOwner(), listElements -> {
             if (listElements.isEmpty())

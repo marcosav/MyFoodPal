@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tagview="http://schemas.android.com/apk/res-auto"
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,9 +8,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        tagview:menu="@menu/settings_menu"
-        tagview:navigationIcon="@drawable/ic_baseline_arrow_back"
-        tagview:title="@string/bnm_settings" />
+        app:menu="@menu/settings_menu"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back"
+        app:title="@string/bnm_settings" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settingsContainer"
@@ -24,21 +23,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            tagview:layout_constraintBottom_toBottomOf="parent"
-            tagview:layout_constraintEnd_toEndOf="@+id/scrollSettingsContainer"
-            tagview:layout_constraintStart_toStartOf="parent"
-            tagview:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/scrollSettingsContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollSettingsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tagview:layout_constraintBottom_toBottomOf="parent"
-            tagview:layout_constraintEnd_toEndOf="parent"
-            tagview:layout_constraintHorizontal_bias="0.0"
-            tagview:layout_constraintStart_toStartOf="parent"
-            tagview:layout_constraintTop_toTopOf="parent"
-            tagview:layout_constraintVertical_bias="1.0">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
 
             <LinearLayout
                 android:id="@+id/scrollLL"

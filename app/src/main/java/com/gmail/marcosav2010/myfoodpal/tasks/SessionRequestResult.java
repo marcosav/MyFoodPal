@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 public class SessionRequestResult {
 
     @Getter
-    private Type type;
+    private final Type type;
     @Getter
-    private MFPSession result;
+    private final MFPSession result;
 
     @NoArgsConstructor
     @AllArgsConstructor

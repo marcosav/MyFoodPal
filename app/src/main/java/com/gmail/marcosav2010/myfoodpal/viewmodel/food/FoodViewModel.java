@@ -107,7 +107,7 @@ public class FoodViewModel extends AndroidViewModel {
     }
 
     private void setErrorResult(@NonNull FoodQueryResult.Type resultType) {
-        this.result.setValue(FoodQueryResult.from(resultType, null));
+        this.result.setValue(FoodQueryResult.from(resultType));
     }
 
     public FoodQueryData getQueryData() {
@@ -175,7 +175,7 @@ public class FoodViewModel extends AndroidViewModel {
     public void addElement(ListElement listElement) {
         List<ListElement> l = new ArrayList<>(Objects.requireNonNull(foodList.getValue()));
         l.add(listElement);
-        result.setValue(FoodQueryResult.from(FoodQueryResult.Type.SUCCESS, null));
+        result.setValue(FoodQueryResult.from(FoodQueryResult.Type.SUCCESS));
         foodList.setValue(l);
     }
 }
