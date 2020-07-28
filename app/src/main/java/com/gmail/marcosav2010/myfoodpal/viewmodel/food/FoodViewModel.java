@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormatter;
 import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
@@ -23,6 +24,8 @@ import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -175,7 +178,12 @@ public class FoodViewModel extends AndroidViewModel {
     public void addElement(ListElement listElement) {
         List<ListElement> l = new ArrayList<>(Objects.requireNonNull(foodList.getValue()));
         l.add(listElement);
-        result.setValue(FoodQueryResult.from(FoodQueryResult.Type.SUCCESS));
+
+        Collection<Food> currentFoodResult = result.getValue() == null ?
+                Collections.emptyList() :
+                result.getValue().getRawList();
+
+        result.setValue(FoodQueryResult.from(FoodQueryResult.Type.SUCCESS, l, currentFoodResult));
         foodList.setValue(l);
     }
 }
