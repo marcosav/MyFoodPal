@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyFoodPal</string>
+    <string name="bnm_share_copy">Copiar</string>
+    <string name="bnm_settings">Ajustes</string>
+    <string name="bnm_add">Añadir</string>
+    <string name="title_raw_food">Lista preliminar</string>
+    <string name="choose_meals">Elige las comidas</string>
+    <string name="empty_list">Vacío</string>
+    <string name="error_whatsapp">Error al abrir WhatsApp</string>
+    <string name="error_copy">Error al copiar</string>
+    <string name="successfully_copied">Copiado al portapapeles</string>
+    <string name="no_content">No hay contenido</string>
+    <string name="generating">Cargando…</string>
+    <string name="food_generation_error_base">Ha ocurrido un error al cargar la comida:&#160;</string>
+    <string name="food_result_unknown_error">Error inesperado</string>
+    <string name="result_io_error">Error de conexión</string>
+    <string name="food_result_no_session_error">No has iniciado sesión de myfitnesspal</string>
+    <string name="result_no_internet_error">No hay conexión a internet</string>
+    <string name="session_request_error_login">Comprueba tu usuario y contraseña por favor</string>
+    <string name="name_input_hint">Nombre</string>
+    <string name="value_input_hint">Valor</string>
+    <string name="sm_save">Guardar</string>
+    <string name="sm_export">Exportar</string>
+    <string name="sm_reload">Recargar</string>
+    <string name="mfp_username_input_hint">Usuario</string>
+    <string name="mfp_password_input_hint">Contraseña</string>
+    <string name="settings_saved">Ajustes guardados</string>
+    <string name="settings_bad_format">Formato de JSON erroneo</string>
+    <string name="settings_credentials_saved">Credenciales correctamente comprobadas y guardadas</string>
+    <string name="settings_saving">Guardando ajustes&#8230;</string>
+    <string name="settings_saving_and_checking_credentials">Guardando ajustes y comprobando credenciales&#8230;</string>
+    <string name="settings_error_logging">Ha ocurrido un error al iniciar sesión:&#160;</string>
+    <string name="s_credentials_title">Credenciales myfitnesspal</string>
+    <string name="no_food_loaded">¡No hay comida cargada!</string>
+</resources>
