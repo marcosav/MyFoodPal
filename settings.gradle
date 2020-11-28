@@ -1,2 +1,2 @@
-include ':app', ':myfitnesspal-api', ':myfitnesspal-api-lister'
+include ':app'
 rootProject.name='MyFoodPal'
