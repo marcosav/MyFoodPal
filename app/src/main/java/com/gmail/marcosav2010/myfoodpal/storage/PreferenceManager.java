@@ -2,7 +2,7 @@ package com.gmail.marcosav2010.myfoodpal.storage;
 
 import android.content.SharedPreferences;
 
-import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListerData;
 
 import lombok.RequiredArgsConstructor;
 

@@ -7,14 +7,13 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.gmail.marcosav2010.myfitnesspal.api.Food;
-import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
-import com.gmail.marcosav2010.myfitnesspal.api.lister.CustomFoodFormatter;
-import com.gmail.marcosav2010.myfitnesspal.api.lister.ListerData;
+import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.common.Utils;
 import com.gmail.marcosav2010.myfoodpal.model.food.FoodQueryData;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListerData;
 import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryResult;
@@ -127,7 +126,7 @@ public class FoodViewModel extends AndroidViewModel {
 
         PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
         ListerData lc = preferenceManager.getListerData();
-        MFPSession session = dataStorer.getSession();
+        IMFPSession session = dataStorer.getSession();
 
         if (session == null) {
             String username = preferenceManager.getMFPUsername();
@@ -150,7 +149,7 @@ public class FoodViewModel extends AndroidViewModel {
         sendFoodQuery(session, lc);
     }
 
-    private void sendFoodQuery(MFPSession session, ListerData lc) {
+    private void sendFoodQuery(IMFPSession session, ListerData lc) {
         if (!Utils.hasInternetConnection(getApplication().getApplicationContext())) {
             setErrorResult(FoodQueryResult.Type.NO_INTERNET_ERROR);
             return;
@@ -159,7 +158,6 @@ public class FoodViewModel extends AndroidViewModel {
         new FoodQueryTask(
                 session,
                 lc,
-                new CustomFoodFormatter(lc),
                 getQueryData(),
                 this::setResult
         ).execute();
@@ -179,7 +177,7 @@ public class FoodViewModel extends AndroidViewModel {
         List<ListElement> l = new ArrayList<>(Objects.requireNonNull(foodList.getValue()));
         l.add(listElement);
 
-        Collection<Food> currentFoodResult = result.getValue() == null ?
+        Collection<ListedFood> currentFoodResult = result.getValue() == null ?
                 Collections.emptyList() :
                 result.getValue().getRawList();
 

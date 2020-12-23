@@ -3,6 +3,7 @@ package com.gmail.marcosav2010.myfoodpal.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfoodpal.common.Utils;
 import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
@@ -25,7 +26,7 @@ public class SessionRequestTask extends AsyncTask<String, Void, SessionRequestRe
         if (!Utils.hasInternetConnection(context))
             return SessionRequestResult.from(SessionRequestResult.Type.NO_INTERNET_ERROR, null);
         try {
-            MFPSession session = MFPSession.create(user, password);
+            IMFPSession session = MFPSession.create(user, password);
             return SessionRequestResult.from(SessionRequestResult.Type.SUCCESS, session);
         } catch (IOException ex) {
             return SessionRequestResult.from(SessionRequestResult.Type.IO_ERROR, null);

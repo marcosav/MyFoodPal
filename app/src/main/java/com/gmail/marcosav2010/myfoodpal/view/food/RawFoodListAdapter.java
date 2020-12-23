@@ -8,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfoodpal.R;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RawFoodListAdapter extends RecyclerView.Adapter<RawFoodListAdapter.ViewHolder> {
 
-    private final List<Food> mValues;
+    private final List<ListedFood> mValues;
 
     @NonNull
     @Override
@@ -51,7 +51,7 @@ public class RawFoodListAdapter extends RecyclerView.Adapter<RawFoodListAdapter.
             unitTV = view.findViewById(R.id.food_unit);
         }
 
-        public void bind(Food food) {
+        public void bind(ListedFood food) {
             nameTV.setText(food.getName());
             amountTV.setText(String.valueOf(food.getAmount()));
             unitTV.setText(food.getUnit());

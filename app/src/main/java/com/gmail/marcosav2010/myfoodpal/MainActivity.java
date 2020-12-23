@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.gmail.marcosav2010.myfitnesspal.api.Food;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragment;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragmentListener;
 import com.gmail.marcosav2010.myfoodpal.view.food.RawFoodFragment;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements FoodFragmentListe
     }
 
     @Override
-    public void onRawFoodListOpen(Collection<Food> foodList) {
+    public void onRawFoodListOpen(Collection<ListedFood> foodList) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);

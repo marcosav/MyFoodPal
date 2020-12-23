@@ -1,8 +1,8 @@
 package com.gmail.marcosav2010.myfoodpal.tasks;
 
-import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +21,7 @@ public class FoodQueryResult {
     @Getter
     private List<ListElement> result;
     @Getter
-    private Collection<Food> rawList;
+    private Collection<ListedFood> rawList;
 
     @NoArgsConstructor
     @AllArgsConstructor

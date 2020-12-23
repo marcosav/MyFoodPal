@@ -3,6 +3,7 @@ package com.gmail.marcosav2010.myfoodpal.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
 
@@ -18,7 +19,7 @@ public class DataStorer {
 
     private static DataStorer instance;
 
-    private MFPSession session;
+    private IMFPSession session;
 
     @Getter
     private PreferenceManager preferenceManager;
@@ -36,16 +37,16 @@ public class DataStorer {
         return instance;
     }
 
-    public MFPSession getSession() {
-        MFPSession s;
+    public IMFPSession getSession() {
+        IMFPSession s;
         if (session == null) {
             String savedSession = getSavedSession();
             if (savedSession != null) {
                 s = MFPSession.from(savedSession);
-                if (!s.shouldRelog())
+                if (!s.shouldReLog())
                     session = s;
             }
-        } else if (session.shouldRelog())
+        } else if (session.shouldReLog())
             session = null;
 
         return session;

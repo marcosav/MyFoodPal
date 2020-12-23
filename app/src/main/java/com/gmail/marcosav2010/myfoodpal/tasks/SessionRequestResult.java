@@ -1,6 +1,6 @@
 package com.gmail.marcosav2010.myfoodpal.tasks;
 
-import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
+import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfoodpal.R;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ public class SessionRequestResult {
     @Getter
     private final Type type;
     @Getter
-    private final MFPSession result;
+    private final IMFPSession result;
 
     @NoArgsConstructor
     @AllArgsConstructor

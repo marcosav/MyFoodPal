@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gmail.marcosav2010.myfitnesspal.api.Food;
 import com.gmail.marcosav2010.myfoodpal.R;
+import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -26,23 +26,23 @@ public class RawFoodFragment extends Fragment {
     private static final String FOOD_DATA_UNIT_ARG = "raw_food_data_unit_";
     private static final String FOOD_DATA_AMOUNT_ARG = "raw_food_data_amount_";
 
-    private List<Food> foodList;
+    private List<ListedFood> foodList;
 
     public RawFoodFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static RawFoodFragment newInstance(Collection<Food> foodList) {
+    public static RawFoodFragment newInstance(Collection<ListedFood> foodList) {
         RawFoodFragment fragment = new RawFoodFragment();
         Bundle args = new Bundle();
 
         int i = 0;
         args.putInt(FOOD_DATA_SIZE_ARG, foodList.size());
-        for (Food f : foodList) {
+        for (ListedFood f : foodList) {
             args.putString(FOOD_DATA_NAME_ARG + i, f.getName());
             args.putString(FOOD_DATA_BRAND_ARG + i, f.getBrand());
             args.putString(FOOD_DATA_UNIT_ARG + i, f.getUnit());
-            args.putDouble(FOOD_DATA_AMOUNT_ARG + i, f.getAmount());
+            args.putFloat(FOOD_DATA_AMOUNT_ARG + i, f.getAmount());
             i++;
         }
 
@@ -60,11 +60,11 @@ public class RawFoodFragment extends Fragment {
 
             foodList = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
-                foodList.add(new Food(
+                foodList.add(new ListedFood(
                         getArguments().getString(FOOD_DATA_NAME_ARG + i),
                         getArguments().getString(FOOD_DATA_BRAND_ARG + i),
                         getArguments().getString(FOOD_DATA_UNIT_ARG + i),
-                        getArguments().getDouble(FOOD_DATA_AMOUNT_ARG + i)
+                        getArguments().getFloat(FOOD_DATA_AMOUNT_ARG + i)
                 ));
             }
         }
