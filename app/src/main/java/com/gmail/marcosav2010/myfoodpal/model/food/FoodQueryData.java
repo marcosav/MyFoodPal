@@ -10,9 +10,11 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FoodQueryData implements Parcelable {
 
     private String meals;
@@ -31,9 +33,6 @@ public class FoodQueryData implements Parcelable {
             return new FoodQueryData[size];
         }
     };
-
-    public FoodQueryData() {
-    }
 
     protected FoodQueryData(Parcel in) {
         meals = in.readString();

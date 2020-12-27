@@ -14,8 +14,8 @@ import com.gmail.marcosav2010.myfoodpal.model.food.FoodQueryData;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
 import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListerData;
-import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
+import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryResult;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryTask;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
@@ -28,25 +28,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FoodViewModel extends AndroidViewModel {
 
-    private DataStorer dataStorer = DataStorer.load(getApplication().getApplicationContext());
+    private final SessionStorage sessionStorage = SessionStorage.load(getApplication().getApplicationContext());
+    private final PreferenceManager preferenceManager = PreferenceManager.load(getApplication().getApplicationContext());
 
     private boolean buying = true;
 
-    private MutableLiveData<String> meals = new MutableLiveData<>(getApplication().getString(R.string.def_meals_opt));
-    private MutableLiveData<Calendar> date;
-    private MutableLiveData<Calendar> toDate;
+    private final MutableLiveData<String> selectedMeals;
+    private final MutableLiveData<Calendar> date;
+    private final MutableLiveData<Calendar> toDate;
 
-    private MutableLiveData<FoodQueryResult> result = new MutableLiveData<>();
-    private MutableLiveData<List<ListElement>> foodList = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<FoodQueryResult> result = new MutableLiveData<>();
+    private final MutableLiveData<List<ListElement>> foodList = new MutableLiveData<>(new ArrayList<>());
 
     public FoodViewModel(@NonNull Application application) {
         super(application);
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
+
+        selectedMeals = new MutableLiveData<>(getAllMeals());
         date = new MutableLiveData<>(c);
         toDate = new MutableLiveData<>(c);
     }
@@ -74,12 +78,16 @@ public class FoodViewModel extends AndroidViewModel {
         this.buying = buying;
     }
 
-    public LiveData<String> getMeals() {
-        return meals;
+    public LiveData<String> getSelectedMeals() {
+        return selectedMeals;
     }
 
-    public void setMeals(@NonNull String meals) {
-        this.meals.setValue(meals);
+    public void setSelectedMeals(@NonNull String selectedMeals) {
+        this.selectedMeals.setValue(selectedMeals);
+    }
+
+    public void selectAllMeals() {
+        setSelectedMeals(getAllMeals());
     }
 
     public LiveData<Calendar> getDate() {
@@ -108,13 +116,23 @@ public class FoodViewModel extends AndroidViewModel {
         this.toDate.setValue(toDate);
     }
 
+    public List<String> getUserMeals() {
+        return sessionStorage.getMeals();
+    }
+
+    public String getAllMeals() {
+        return IntStream.range(0, getUserMeals().size())
+                .mapToObj(Integer::toString)
+                .collect(Collectors.joining());
+    }
+
     private void setErrorResult(@NonNull FoodQueryResult.Type resultType) {
         this.result.setValue(FoodQueryResult.from(resultType));
     }
 
     public FoodQueryData getQueryData() {
         return new FoodQueryData(
-                meals.getValue(),
+                selectedMeals.getValue(),
                 buying,
                 Objects.requireNonNull(date.getValue()).getTime(),
                 Objects.requireNonNull(toDate.getValue()).getTime()
@@ -124,9 +142,8 @@ public class FoodViewModel extends AndroidViewModel {
     public void loadFoodList() {
         result.setValue(null);
 
-        PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
         ListerData lc = preferenceManager.getListerData();
-        IMFPSession session = dataStorer.getSession();
+        IMFPSession session = sessionStorage.getSession();
 
         if (session == null) {
             String username = preferenceManager.getMFPUsername();
@@ -137,7 +154,7 @@ public class FoodViewModel extends AndroidViewModel {
             } else {
                 new SessionRequestTask(getApplication().getApplicationContext(), r -> {
                     if (r.getType() == SessionRequestResult.Type.SUCCESS)
-                        sendFoodQuery(dataStorer.getSession(), lc);
+                        sendFoodQuery(sessionStorage.getSession(), lc);
                     else
                         setErrorResult(FoodQueryResult.Type.NO_SESSION);
                 }).execute(username, password);

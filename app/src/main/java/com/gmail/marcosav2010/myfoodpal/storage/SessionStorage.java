@@ -3,37 +3,43 @@ package com.gmail.marcosav2010.myfoodpal.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.gmail.marcosav2010.json.JSONArray;
 import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
 
-import lombok.Getter;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import lombok.NonNull;
 
-public class DataStorer {
+public class SessionStorage {
 
-    private static final String PREFERENCES_NAME = "global_preferences";
+    public static final int MAX_MEALS = 6;
+
     private static final String MFP_SESSION = "mfp_session";
     private static final String MFP_LOGIN_DATE = "mfp_login_date";
     private static final String MFP_LOGIN_RESULT = "mfp_login_result";
+    private static final String MFP_MEALS = "mfp_meals";
 
-    private static DataStorer instance;
+    private static final List<String> DEFAULT_MEALS = IntStream.range(0, MAX_MEALS)
+            .mapToObj(Integer::toString)
+            .collect(Collectors.toList());
+
+    private static SessionStorage instance;
 
     private IMFPSession session;
 
-    @Getter
-    private PreferenceManager preferenceManager;
+    private final SharedPreferences preferences;
 
-    private SharedPreferences preferences;
-
-    private DataStorer(Context c) {
-        preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-        preferenceManager = new PreferenceManager(preferences);
+    private SessionStorage(Context c) {
+        preferences = ApplicationPreferences.load(c);
     }
 
-    public static DataStorer load(@NonNull Context c) {
+    public static SessionStorage load(@NonNull Context c) {
         if (instance == null)
-            instance = new DataStorer(c);
+            instance = new SessionStorage(c);
         return instance;
     }
 
@@ -58,11 +64,16 @@ public class DataStorer {
     }
 
     private void saveSession(SessionRequestResult result) {
-        preferences.edit()
+        SharedPreferences.Editor e = preferences.edit()
                 .putString(MFP_SESSION, session == null ? null : session.encode())
-                .putLong(MFP_LOGIN_DATE, System.currentTimeMillis())
-                .putString(MFP_LOGIN_RESULT, result.getType().name())
-                .apply();
+                .putString(MFP_LOGIN_RESULT, result.getType().name());
+
+        if (session != null) {
+            e.putLong(MFP_LOGIN_DATE, session.getCreationTime())
+                    .putString(MFP_MEALS, new JSONArray(session.toUser().getMealNames()).toString());
+        }
+
+        e.apply();
     }
 
     private String getSavedSession() {
@@ -75,5 +86,12 @@ public class DataStorer {
 
     public String getLoginResult() {
         return preferences.getString(MFP_LOGIN_RESULT, null);
+    }
+
+    public List<String> getMeals() {
+        String raw = preferences.getString(MFP_MEALS, null);
+        return raw == null ? DEFAULT_MEALS : new JSONArray(raw).toList().stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
     }
 }

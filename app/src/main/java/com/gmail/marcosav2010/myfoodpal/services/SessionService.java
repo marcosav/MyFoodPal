@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
 import com.gmail.marcosav2010.myfoodpal.receivers.BootReceiver;
-import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
+import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestTask;
@@ -33,8 +33,7 @@ public class SessionService extends JobIntentService {
 
     private void sendRequest() {
         try {
-            DataStorer dataStorer = DataStorer.load(getApplicationContext());
-            PreferenceManager preferenceManager = dataStorer.getPreferenceManager();
+            PreferenceManager preferenceManager = PreferenceManager.load(getApplicationContext());
             String user = preferenceManager.getMFPUsername(),
                     password = preferenceManager.getMFPPassword();
 

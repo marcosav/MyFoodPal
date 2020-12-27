@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfoodpal.common.Utils;
-import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
+import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -36,7 +36,7 @@ public class SessionRequestTask extends AsyncTask<String, Void, SessionRequestRe
     }
 
     public static void postExecute(Context context, SessionRequestResult got, Consumer<SessionRequestResult> handler) {
-        DataStorer.load(context).setSession(got);
+        SessionStorage.load(context).setSession(got);
         handler.accept(got);
     }
 

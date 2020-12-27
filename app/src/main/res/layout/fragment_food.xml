@@ -156,7 +156,6 @@
                     android:focusableInTouchMode="false"
                     android:hint="@null"
                     android:inputType="number"
-                    android:maxLength="4"
                     android:text="@{viewModel.meals}"
                     android:textAlignment="center" />
             </LinearLayout>

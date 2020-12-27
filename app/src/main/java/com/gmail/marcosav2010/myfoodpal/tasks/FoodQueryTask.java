@@ -39,16 +39,13 @@ public class FoodQueryTask extends AsyncTask<Void, Void, FoodQueryResult> {
                             .collect(Collectors.toList())
             );
 
-            Collection<ListedFood> foodList = fl.toFood(data.isBuy());
-            List<ListElement> list = fl.toList(foodList, data.isBuy())
+            Collection<ListedFood> rawFoodList = fl.toFood(data.isBuy());
+            List<ListElement> list = fl.toList(rawFoodList, data.isBuy())
                     .stream()
                     .map(ListElement::new)
                     .collect(Collectors.toList());
 
-            return FoodQueryResult.from(FoodQueryResult.Type.SUCCESS, list, foodList);
-
-        /*} catch (IOException ex) {
-            return FoodQueryResult.from(FoodQueryResult.Type.IO_ERROR, null);*/
+            return FoodQueryResult.from(FoodQueryResult.Type.SUCCESS, list, rawFoodList);
 
         } catch (Exception ex) {
             Log.e("", "There was an error while retrieving food list", ex);

@@ -12,7 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.gmail.marcosav2010.json.JSONObject;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSetting;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSettingCategory;
-import com.gmail.marcosav2010.myfoodpal.storage.DataStorer;
+import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
 
 import java.util.Collection;
@@ -25,18 +25,18 @@ import java.util.stream.Collectors;
 
 public class SettingsViewModel extends AndroidViewModel {
 
-    private DataStorer dataStorer;
-    private PreferenceManager preferenceManager;
+    private final SessionStorage sessionStorage;
+    private final PreferenceManager preferenceManager;
 
-    private MutableLiveData<Map<String, FoodSettingCategory>> loadedConfig = new MutableLiveData<>();
+    private final MutableLiveData<Map<String, FoodSettingCategory>> loadedConfig = new MutableLiveData<>();
 
     private Map<String, FoodSettingCategory> config;
 
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
-        dataStorer = DataStorer.load(application.getApplicationContext());
-        preferenceManager = dataStorer.getPreferenceManager();
+        sessionStorage = SessionStorage.load(application.getApplicationContext());
+        preferenceManager = PreferenceManager.load(application.getApplicationContext());
 
         new LoadAsyncTask().execute();
     }
@@ -88,11 +88,11 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     public long getLoginDate() {
-        return dataStorer.getLoginDate();
+        return sessionStorage.getLoginDate();
     }
 
     public String getLoginResult() {
-        return dataStorer.getLoginResult();
+        return sessionStorage.getLoginResult();
     }
 
     public void removeSetting(String category, int position) {

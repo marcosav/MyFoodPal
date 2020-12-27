@@ -3,6 +3,7 @@ package com.gmail.marcosav2010.myfoodpal.view.food;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.common.Utils;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
+import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryResult;
 import com.gmail.marcosav2010.myfoodpal.viewmodel.food.FoodViewModel;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -33,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 public class FoodFragment extends Fragment {
@@ -118,7 +121,7 @@ public class FoodFragment extends Fragment {
             foodListAdapter.submitList(listElements);
         });
 
-        viewModel.getMeals().observe(getViewLifecycleOwner(), mealsOpt::setText);
+        viewModel.getSelectedMeals().observe(getViewLifecycleOwner(), mealsOpt::setText);
         viewModel.getDate().observe(getViewLifecycleOwner(), date -> tryDate(dateOpt, date));
         viewModel.getToDate().observe(getViewLifecycleOwner(), toDate -> {
             if (viewModel.isBuying())
@@ -139,6 +142,7 @@ public class FoodFragment extends Fragment {
             }
         });
 
+        mealsOpt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(SessionStorage.MAX_MEALS)});
         dateOpt.setOnClickListener(v -> pickDate(false));
         toDateOpt.setOnClickListener(v -> pickDate(true));
         mealsOpt.setOnClickListener(v -> pickMeals());
@@ -153,7 +157,7 @@ public class FoodFragment extends Fragment {
             tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 
             viewModel.setBuying(true);
-            viewModel.setMeals(getString(R.string.def_meals_opt));
+            viewModel.selectAllMeals();
             viewModel.setDate(tomorrow);
             viewModel.setToDate(tomorrow);
         });
@@ -168,7 +172,7 @@ public class FoodFragment extends Fragment {
             Calendar now = Calendar.getInstance();
             viewModel.setBuying(false);
             viewModel.setDate(now);
-            viewModel.setMeals(now.get(Calendar.HOUR_OF_DAY) >= DINNER_THRESHOLD ? "2" : "1");
+            viewModel.setSelectedMeals(now.get(Calendar.HOUR_OF_DAY) >= DINNER_THRESHOLD ? "2" : "1");
         });
 
         if (viewModel.isBuying())
@@ -180,12 +184,13 @@ public class FoodFragment extends Fragment {
     private void pickMeals() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
 
-        String selectedMeals = viewModel.getMeals().getValue();
+        String selectedMeals = viewModel.getSelectedMeals().getValue();
 
-        String[] meals = new String[4];
-        boolean[] checkedItems = new boolean[4];
-        for (int i = 0; i < 4; i++) {
-            meals[i] = String.valueOf(i);
+        List<String> userMeals = viewModel.getUserMeals();
+        String[] meals = userMeals.toArray(new String[0]);
+        boolean[] checkedItems = new boolean[userMeals.size()];
+
+        for (int i = 0; i < userMeals.size(); i++) {
             if (Objects.requireNonNull(selectedMeals).contains(String.valueOf(i)))
                 checkedItems[i] = true;
         }
@@ -198,7 +203,7 @@ public class FoodFragment extends Fragment {
                         if (checkedItems[i])
                             out.append(i);
 
-                    viewModel.setMeals(out.toString());
+                    viewModel.setSelectedMeals(out.toString());
                 }).setNegativeButton(getString(android.R.string.cancel), null)
                 .create()
                 .show();

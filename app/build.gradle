@@ -23,7 +23,7 @@ android {
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
-        versionName "1.4"
+        versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -59,11 +59,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
 
     api 'com.google.guava:guava:29.0-jre'
     api group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 
-    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.2'
+    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.2.1'
 }

@@ -1,9 +1,11 @@
 package com.gmail.marcosav2010.myfoodpal.storage;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListerData;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -15,7 +17,19 @@ public class PreferenceManager {
     private static final String MFP_USERNAME = "mfp_username";
     private static final String MFP_PASSWORD = "mfp_password";
 
+    private static PreferenceManager instance;
+
     private final SharedPreferences preferences;
+
+    private PreferenceManager(Context c) {
+        preferences = ApplicationPreferences.load(c);
+    }
+
+    public static PreferenceManager load(@NonNull Context c) {
+        if (instance == null)
+            instance = new PreferenceManager(c);
+        return instance;
+    }
 
     private ListerData ld;
 
