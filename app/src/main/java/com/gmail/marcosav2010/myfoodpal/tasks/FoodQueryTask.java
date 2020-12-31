@@ -4,7 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gmail.marcosav2010.myfitnesspal.api.IMFPSession;
-import com.gmail.marcosav2010.myfitnesspal.api.food.diary.FoodDay;
+import com.gmail.marcosav2010.myfitnesspal.api.diary.Day;
+import com.gmail.marcosav2010.myfitnesspal.api.diary.Diary;
 import com.gmail.marcosav2010.myfoodpal.model.food.FoodQueryData;
 import com.gmail.marcosav2010.myfoodpal.model.food.ListElement;
 import com.gmail.marcosav2010.myfoodpal.model.food.lister.FoodList;
@@ -28,14 +29,15 @@ public class FoodQueryTask extends AsyncTask<Void, Void, FoodQueryResult> {
 
     protected FoodQueryResult doInBackground(Void... login) {
         try {
-            List<FoodDay> days = session
+            List<Day> days = session
                     .toDiary()
-                    .getDayRange(data.getDates(), data.getMeals());
+                    .getDayRange(data.getDates(), Diary.FOOD);
 
             FoodList fl = new FoodList(lc,
                     days
                             .stream()
                             .flatMap(d -> d.getMeals().stream())
+                            .filter(m -> data.getMeals().contains(String.valueOf(m.getIndex())))
                             .collect(Collectors.toList())
             );
 

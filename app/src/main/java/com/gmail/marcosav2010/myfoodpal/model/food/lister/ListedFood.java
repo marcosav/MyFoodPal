@@ -1,6 +1,6 @@
 package com.gmail.marcosav2010.myfoodpal.model.food.lister;
 
-import com.gmail.marcosav2010.myfitnesspal.api.food.diary.DiaryFood;
+import com.gmail.marcosav2010.myfitnesspal.api.diary.food.DiaryFood;
 
 import java.util.HashMap;
 

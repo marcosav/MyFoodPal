@@ -1,8 +1,8 @@
 package com.gmail.marcosav2010.myfoodpal.model.food.lister;
 
 import com.gmail.marcosav2010.json.JSONArray;
-import com.gmail.marcosav2010.myfitnesspal.api.food.diary.DiaryFood;
-import com.gmail.marcosav2010.myfitnesspal.api.food.diary.DiaryMeal;
+import com.gmail.marcosav2010.myfitnesspal.api.diary.food.DiaryFood;
+import com.gmail.marcosav2010.myfitnesspal.api.diary.food.DiaryMeal;
 
 import java.util.Collection;
 import java.util.HashMap;
