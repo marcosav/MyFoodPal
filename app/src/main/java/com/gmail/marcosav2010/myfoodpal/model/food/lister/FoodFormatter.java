@@ -12,7 +12,7 @@ public class FoodFormatter {
     private final ListerData data;
 
     private String getAmountUnit(String u) {
-        if (u.startsWith("g"))
+        if (u.toLowerCase().startsWith("g"))
             return "g";
 
         if (data.isUnitAlias(u))
@@ -23,7 +23,7 @@ public class FoodFormatter {
 
     public Function<DiaryFood, ListedFood> mapper() {
         return (food) -> new ListedFood(
-                data.getAlias(food.getName()), food.getBrand(), getAmountUnit(food.getUnit()), food.getAmount()
+                data.getAlias(food.getName().trim()), food.getBrand(), getAmountUnit(food.getUnit()), food.getAmount()
         );
     }
 }

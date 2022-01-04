@@ -18,7 +18,7 @@ public class ListedFood extends DiaryFood {
     }
 
     public void add(float amount) {
-        this.amount = amount;
+        this.amount += amount;
     }
 
     @Override
