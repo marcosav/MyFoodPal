@@ -48,7 +48,7 @@ public class SessionStorage {
         if (session == null) {
             String savedSession = getSavedSession();
             if (savedSession != null) {
-                s = MFPSession.from(savedSession);
+                s = MFPSession.from(savedSession, null);
                 if (!s.shouldReLog())
                     session = s;
             }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
+import com.gmail.marcosav2010.myfoodpal.common.Utils;
 import com.gmail.marcosav2010.myfoodpal.receivers.BootReceiver;
 import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
@@ -34,13 +35,12 @@ public class SessionService extends JobIntentService {
     private void sendRequest() {
         try {
             PreferenceManager preferenceManager = PreferenceManager.load(getApplicationContext());
-            String user = preferenceManager.getMFPUsername(),
-                    password = preferenceManager.getMFPPassword();
+            var cookies = preferenceManager.getCookies();
 
-            if (user != null && password != null) {
-                SessionRequestResult res = SessionRequestTask
-                        .execute(getApplicationContext(), user, password);
-                SessionRequestTask.postExecute(getApplicationContext(), res, this::handleResult);
+            if (cookies != null) {
+                var hasInternet = Utils.hasInternetConnection(getApplication().getApplicationContext());
+                SessionRequestResult res = SessionRequestTask.execute(hasInternet, cookies);
+                handleResult(res);
             }
 
         } catch (Exception ex) {
@@ -50,6 +50,7 @@ public class SessionService extends JobIntentService {
     }
 
     private void handleResult(SessionRequestResult r) {
+        SessionStorage.load(getApplicationContext()).setSession(r);
         try {
             switch (r.getType()) {
                 case SUCCESS:

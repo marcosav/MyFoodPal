@@ -1,15 +1,17 @@
 package com.gmail.marcosav2010.myfoodpal.view.settings;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,12 +34,9 @@ import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSetting;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSettingCategory;
 import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
-import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestTask;
 import com.gmail.marcosav2010.myfoodpal.viewmodel.settings.SettingsViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Date;
 import java.util.Objects;
@@ -50,8 +49,7 @@ public class SettingsFragment extends Fragment {
     private LinearLayout categoriesLinearLayout;
     private ProgressBar progressBar;
 
-    private TextInputEditText usernameET, passwordET;
-    private TextInputLayout usernameTIL, passwordTIL;
+    private Button loginBT;
 
     private ProgressBar loginPB;
 
@@ -79,11 +77,8 @@ public class SettingsFragment extends Fragment {
         loginDateLB.setOnClickListener(e -> loginDateLB.setText(String.format("%s %s",
                 new Date(viewModel.getLoginDate()), viewModel.getLoginResult())));
 
-        usernameET = root.findViewById(R.id.usernameET);
-        passwordET = root.findViewById(R.id.passwordET);
-
-        usernameTIL = root.findViewById(R.id.usernameTIL);
-        passwordTIL = root.findViewById(R.id.passwordTIL);
+        loginBT = root.findViewById(R.id.loginBT);
+        loginBT.setOnClickListener(e -> onLoginClick());
 
         loginPB = root.findViewById(R.id.loginPB);
 
@@ -113,6 +108,22 @@ public class SettingsFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
 
                 categoriesLinearLayout.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        viewModel.getSessionLoadStatus().observe(getViewLifecycleOwner(), r -> {
+            if (r != null) {
+                loginPB.setVisibility(View.INVISIBLE);
+
+                SessionRequestResult.Type type = r.getType();
+
+                if (type == SessionRequestResult.Type.SUCCESS) {
+                    Toast.makeText(context, R.string.settings_credentials_saved, Toast.LENGTH_LONG).show();
+
+                } else {
+                    String msg = getString(R.string.settings_error_logging) + getString(type.getMsg());
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -145,6 +156,32 @@ public class SettingsFragment extends Fragment {
         addBT.setOnClickListener(v -> showInsertInput(cat, recyclerView));
 
         categoriesLinearLayout.addView(container);
+    }
+
+    private static final int LAUNCH_SECOND_ACTIVITY = 1423;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LAUNCH_SECOND_ACTIVITY)
+            if (resultCode == Activity.RESULT_OK)
+                handleResult(parseSerializedCookies(data));
+    }
+
+    private void onLoginClick() {
+        Intent intent = new Intent(getContext(), MFPLoginActivity.class);
+        intent.putExtra("url", "https://www.myfitnesspal.com/account/login");
+        startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY);
+    }
+
+    private String parseSerializedCookies(Intent data) {
+        return data.getStringExtra("cookies");
+    }
+
+    private void handleResult(String serializedCookies) {
+        loginPB.setVisibility(View.VISIBLE);
+        viewModel.handleCookies(serializedCookies);
     }
 
     private void showInput(String title,
@@ -230,57 +267,9 @@ public class SettingsFragment extends Fragment {
         return title;
     }
 
-    private void onCredentialsCheck(SessionRequestResult r, Editable username, Editable password) {
-        SessionRequestResult.Type type = r.getType();
-        loginPB.setVisibility(View.INVISIBLE);
-
-        if (type == SessionRequestResult.Type.SUCCESS) {
-            viewModel.saveMFPCredentials(username.toString(), password.toString());
-
-            username.clear();
-            password.clear();
-
-            usernameET.clearFocus();
-            passwordET.clearFocus();
-
-            Toast.makeText(context, R.string.settings_credentials_saved, Toast.LENGTH_LONG).show();
-            setCredentialsError(null);
-
-        } else {
-            String msg = getString(R.string.settings_error_logging) + getString(type.getMsg());
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-            setCredentialsError(getString(type.getMsg()));
-        }
-    }
-
-    private void setCredentialsError(CharSequence msg) {
-        if (msg == null) {
-            usernameTIL.setErrorEnabled(false);
-            passwordTIL.setErrorEnabled(false);
-        } else {
-            usernameTIL.setError(" ");
-            passwordTIL.setError(msg);
-        }
-    }
-
     private void savePreferences() {
-        Toast.makeText(context, R.string.settings_saving, Toast.LENGTH_LONG).show();
-
         viewModel.saveMFPConfig();
-
-        Editable username = usernameET.getText(), password = passwordET.getText();
-
-        assert password != null;
-        assert username != null;
-
-        if (username.length() != 0 && password.length() != 0) {
-            Toast.makeText(context, R.string.settings_saving_and_checking_credentials, Toast.LENGTH_LONG).show();
-            loginPB.setVisibility(View.VISIBLE);
-
-            new SessionRequestTask(context, r -> onCredentialsCheck(r, username, password))
-                    .execute(username.toString(), password.toString());
-        } else
-            Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_LONG).show();
     }
 
     private void exportPreferences() {
@@ -316,16 +305,9 @@ public class SettingsFragment extends Fragment {
 
     private boolean onTopBarMenuOption(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sm_reload:
-                viewModel.reload();
-                break;
-
-            case R.id.sm_save:
-                savePreferences();
-                break;
-
-            case R.id.sm_export:
-                exportPreferences();
+            case R.id.sm_reload -> viewModel.reload();
+            case R.id.sm_save -> savePreferences();
+            case R.id.sm_export -> exportPreferences();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -146,18 +146,21 @@ public class FoodViewModel extends AndroidViewModel {
         IMFPSession session = sessionStorage.getSession();
 
         if (session == null) {
-            String username = preferenceManager.getMFPUsername();
-            String password = preferenceManager.getMFPPassword();
+            var cookies = preferenceManager.getCookies();
 
-            if (username == null || password == null) {
+            if (cookies == null) {
                 setErrorResult(FoodQueryResult.Type.NO_SESSION);
             } else {
-                new SessionRequestTask(getApplication().getApplicationContext(), r -> {
+                var ctx = getApplication().getApplicationContext();
+                var hasInternet = Utils.hasInternetConnection(ctx);
+
+                new SessionRequestTask(hasInternet, r -> {
+                    SessionStorage.load(ctx).setSession(r);
                     if (r.getType() == SessionRequestResult.Type.SUCCESS)
                         sendFoodQuery(sessionStorage.getSession(), lc);
                     else
                         setErrorResult(FoodQueryResult.Type.NO_SESSION);
-                }).execute(username, password);
+                }).execute(cookies);
             }
 
             return;

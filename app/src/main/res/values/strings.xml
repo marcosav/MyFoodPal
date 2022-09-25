@@ -24,7 +24,7 @@
     <string name="food_result_no_session_error">There\'s no myfitnesspal session created</string>
     <string name="result_no_internet_error">There\'s no internet connection</string>
 
-    <string name="session_request_error_login">Please check your user/password</string>
+    <string name="session_request_error_login">Please check your user/password, they may be wrong</string>
 
     <string name="buy_header" translatable="false">Comprar:</string>
     <string name="prepare_header" translatable="false">Preparar:</string>
@@ -36,17 +36,15 @@
     <string name="sm_export">Export</string>
     <string name="sm_reload">Reload</string>
 
-    <string name="mfp_username_input_hint">Username</string>
-    <string name="mfp_password_input_hint">Password</string>
+    <string name="mfp_password_log_in">Log in</string>
 
     <string name="settings_saved">Settings saved</string>
     <string name="settings_bad_format">Erroneous JSON format</string>
     <string name="settings_credentials_saved">Credentials successfully checked and saved</string>
     <string name="settings_saving">Saving settings&#8230;</string>
-    <string name="settings_saving_and_checking_credentials">Saving config and checking credentials&#8230;</string>
     <string name="settings_error_logging">There was en error while logging in:&#160;</string>
 
-    <string name="s_credentials_title">myfitnesspal Credentials</string>
+    <string name="s_credentials_title">myfitnesspal</string>
 
     <string name="no_food_loaded">There is no food loaded!</string>
 </resources>

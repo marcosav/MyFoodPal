@@ -30,8 +30,6 @@ public class Utils {
 
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
         notificationChannel.setShowBadge(true);
-        /*notificationChannel.enableLights(true);
-        notificationChannel.setLightColor(Color.YELLOW);*/
 
         if (notificationManager == null)
             return;

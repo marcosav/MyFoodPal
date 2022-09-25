@@ -15,14 +15,14 @@ repositories {
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 32
+    buildToolsVersion '32.1.0-rc1'
     defaultConfig {
         applicationId "com.gmail.marcosav2010.myfoodpal"
         minSdkVersion 28
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
-        versionName "1.4.4"
+        versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,9 +33,15 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+    }
+
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -45,12 +51,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment:2.5.2'
+    implementation 'androidx.navigation:navigation-ui:2.5.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
@@ -64,7 +70,7 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
     api 'com.google.guava:guava:29.0-jre'
-    api group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    api group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
 
-    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.3.2'
+    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.4.1'
 }

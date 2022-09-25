@@ -10,10 +10,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gmail.marcosav2010.json.JSONObject;
+import com.gmail.marcosav2010.myfoodpal.common.Utils;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSetting;
 import com.gmail.marcosav2010.myfoodpal.model.settings.FoodSettingCategory;
 import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
+import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
+import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestTask;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private final PreferenceManager preferenceManager;
 
     private final MutableLiveData<Map<String, FoodSettingCategory>> loadedConfig = new MutableLiveData<>();
+    private final MutableLiveData<SessionRequestResult> sessionLoadStatus = new MutableLiveData<>();
 
     private Map<String, FoodSettingCategory> config;
 
@@ -48,6 +52,10 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public LiveData<Map<String, FoodSettingCategory>> getLoadedConfig() {
         return loadedConfig;
+    }
+
+    public LiveData<SessionRequestResult> getSessionLoadStatus() {
+        return sessionLoadStatus;
     }
 
     public void saveMFPConfig(JSONObject settings) {
@@ -79,12 +87,19 @@ public class SettingsViewModel extends AndroidViewModel {
         saveMFPConfig(json);
     }
 
-    public void saveMFPCredentials(String user, String password) {
-        preferenceManager.saveCredentials(user, password);
-    }
-
     public String getMFPConfig() {
         return preferenceManager.getMFPConfig();
+    }
+
+    public void handleCookies(String serializedCookies) {
+        var cookies = preferenceManager.saveCookies(serializedCookies);
+        var ctx = getApplication().getApplicationContext();
+        var hasInternet = Utils.hasInternetConnection(ctx);
+        new SessionRequestTask(hasInternet, r -> {
+            SessionStorage.load(ctx).setSession(r);
+            sessionLoadStatus.setValue(r);
+            sessionLoadStatus.postValue(null);
+        }).execute(cookies);
     }
 
     public long getLoginDate() {

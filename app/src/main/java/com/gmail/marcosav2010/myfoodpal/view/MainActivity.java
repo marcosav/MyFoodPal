@@ -1,4 +1,4 @@
-package com.gmail.marcosav2010.myfoodpal;
+package com.gmail.marcosav2010.myfoodpal.view;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gmail.marcosav2010.myfoodpal.R;
 import com.gmail.marcosav2010.myfoodpal.model.food.lister.ListedFood;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragment;
 import com.gmail.marcosav2010.myfoodpal.view.food.FoodFragmentListener;
