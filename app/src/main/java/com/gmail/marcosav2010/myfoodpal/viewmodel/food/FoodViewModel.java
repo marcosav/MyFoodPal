@@ -18,8 +18,6 @@ import com.gmail.marcosav2010.myfoodpal.storage.PreferenceManager;
 import com.gmail.marcosav2010.myfoodpal.storage.SessionStorage;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryResult;
 import com.gmail.marcosav2010.myfoodpal.tasks.FoodQueryTask;
-import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestResult;
-import com.gmail.marcosav2010.myfoodpal.tasks.SessionRequestTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -144,43 +142,23 @@ public class FoodViewModel extends AndroidViewModel {
 
         ListerData lc = preferenceManager.getListerData();
         IMFPSession session = sessionStorage.getSession();
+        var hasInternet = Utils.hasInternetConnection(getApplication().getApplicationContext());
 
-        if (session == null) {
-            var cookies = preferenceManager.getCookies();
-
-            if (cookies == null) {
-                setErrorResult(FoodQueryResult.Type.NO_SESSION);
-            } else {
-                var ctx = getApplication().getApplicationContext();
-                var hasInternet = Utils.hasInternetConnection(ctx);
-
-                new SessionRequestTask(hasInternet, r -> {
-                    SessionStorage.load(ctx).setSession(r);
-                    if (r.getType() == SessionRequestResult.Type.SUCCESS)
-                        sendFoodQuery(sessionStorage.getSession(), lc);
-                    else
-                        setErrorResult(FoodQueryResult.Type.NO_SESSION);
-                }).execute(cookies);
-            }
-
+        if (session == null || session.shouldReLog()) {
+            setErrorResult(FoodQueryResult.Type.NO_SESSION);
             return;
         }
 
-        sendFoodQuery(session, lc);
+        sendFoodQuery(session, lc, hasInternet);
     }
 
-    private void sendFoodQuery(IMFPSession session, ListerData lc) {
-        if (!Utils.hasInternetConnection(getApplication().getApplicationContext())) {
+    private void sendFoodQuery(IMFPSession session, ListerData lc, boolean hasInternet) {
+        if (!hasInternet) {
             setErrorResult(FoodQueryResult.Type.NO_INTERNET_ERROR);
             return;
         }
 
-        new FoodQueryTask(
-                session,
-                lc,
-                getQueryData(),
-                this::setResult
-        ).execute();
+        new FoodQueryTask(session, lc, getQueryData(), this::setResult).execute();
     }
 
     public String getFoodListOutput() {

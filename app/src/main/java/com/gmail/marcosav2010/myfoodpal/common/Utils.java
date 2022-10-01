@@ -1,9 +1,6 @@
 package com.gmail.marcosav2010.myfoodpal.common;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,38 +12,9 @@ import com.gmail.marcosav2010.myfoodpal.R;
 
 public class Utils {
 
-    private static final String CHANNEL_NAME = "mav";
-    private static final String CHANNEL_ID = "com.gmail.marcosav2010.myfoodpal.channel.mav";
-
     public static boolean hasInternetConnection(Context context) {
         ConnectivityManager cManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cManager.getActiveNetwork() != null;
-    }
-
-    public static void sendNotification(Context context, int id, String title, String body) {
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-        notificationChannel.setShowBadge(true);
-
-        if (notificationManager == null)
-            return;
-        notificationManager.createNotificationChannel(notificationChannel);
-
-        Notification n = getNotification(context, title, body).build();
-
-        notificationManager.notify(id, n);
-    }
-
-    private static Notification.Builder getNotification(Context context, String title, String body) {
-        return new Notification.Builder(context, CHANNEL_ID)
-                .setContentTitle(title)
-                .setStyle(new Notification.BigTextStyle().bigText(body))
-                .setContentText(body)
-                .setSmallIcon(R.drawable.ic_reload)
-                .setAutoCancel(true);
     }
 
     public static Integer copyToClipboard(Activity activity, String content) {

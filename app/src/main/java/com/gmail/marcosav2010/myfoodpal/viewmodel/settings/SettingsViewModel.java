@@ -95,6 +95,7 @@ public class SettingsViewModel extends AndroidViewModel {
         var cookies = preferenceManager.saveCookies(serializedCookies);
         var ctx = getApplication().getApplicationContext();
         var hasInternet = Utils.hasInternetConnection(ctx);
+
         new SessionRequestTask(hasInternet, r -> {
             SessionStorage.load(ctx).setSession(r);
             sessionLoadStatus.setValue(r);

@@ -7,6 +7,7 @@ import com.gmail.marcosav2010.myfitnesspal.api.LoginException;
 import com.gmail.marcosav2010.myfitnesspal.api.MFPSession;
 import com.gmail.marcosav2010.myfoodpal.model.settings.Cookies;
 
+import java.net.URLEncoder;
 import java.util.function.Consumer;
 
 public class SessionRequestTask extends AsyncTask<Cookies, Void, SessionRequestResult> {
@@ -23,7 +24,7 @@ public class SessionRequestTask extends AsyncTask<Cookies, Void, SessionRequestR
         if (!hasInternet)
             return SessionRequestResult.from(SessionRequestResult.Type.NO_INTERNET_ERROR, null);
         try {
-            IMFPSession session = MFPSession.create("a", "a", new PreloadedLoginHandler(cookies));
+            IMFPSession session = MFPSession.create(new PreloadedLoginHandler(cookies));
             return SessionRequestResult.from(SessionRequestResult.Type.SUCCESS, session);
         } catch (LoginException ex) {
             return SessionRequestResult.from(SessionRequestResult.Type.LOGIN_ERROR, null);

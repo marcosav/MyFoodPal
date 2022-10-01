@@ -21,7 +21,7 @@
     <string name="food_generation_error_base">There was an error while getting food:&#160;</string>
     <string name="food_result_unknown_error">Unexpected error</string>
     <string name="result_io_error">Connection error</string>
-    <string name="food_result_no_session_error">There\'s no myfitnesspal session created</string>
+    <string name="food_result_no_session_error">There\'s no myfitnesspal session created or expired</string>
     <string name="result_no_internet_error">There\'s no internet connection</string>
 
     <string name="session_request_error_login">Please check your user/password, they may be wrong</string>
