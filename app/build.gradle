@@ -22,7 +22,7 @@ android {
         minSdkVersion 28
         targetSdkVersion 32
         versionCode 1
-        versionName "1.5"
+        versionName "1.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -72,5 +72,5 @@ dependencies {
     api 'com.google.guava:guava:29.0-jre'
     api group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
 
-    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.5.2'
+    implementation 'com.gmail.marcosav2010:myfitnesspal-api:0.5.4'
 }

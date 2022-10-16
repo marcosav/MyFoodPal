@@ -34,8 +34,7 @@ public class FoodQueryTask extends AsyncTask<Void, Void, FoodQueryResult> {
                     .getDayRange(data.getDates(), Diary.FOOD);
 
             FoodList fl = new FoodList(lc,
-                    days
-                            .stream()
+                    days.stream()
                             .flatMap(d -> d.getMeals().stream())
                             .filter(m -> data.getMeals().contains(String.valueOf(m.getIndex())))
                             .collect(Collectors.toList())
